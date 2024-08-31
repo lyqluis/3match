@@ -8,7 +8,7 @@ const generateMap = () => {
 	const map = {}
 
 	// 定义子目录名称
-	const subDirs = ["food", "tool"]
+	const subDirs = ["food", "tool", "cuisine"]
 
 	// 遍历每个子目录
 	subDirs.forEach((subDir) => {

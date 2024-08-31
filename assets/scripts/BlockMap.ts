@@ -1,4 +1,8 @@
 export const BlockMap = {
+	cabbage: {
+		name: "cabbage",
+		type: "food",
+	},
 	apple: {
 		name: "apple",
 		type: "food",
