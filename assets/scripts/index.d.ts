@@ -27,3 +27,9 @@ type BlockRect = {
 	x: number
 	y: number
 }
+
+type Order = {
+	time: number	// 倒计时时间 s
+	cuisines: Cuisine[]	// 最多 2 个
+	
+}

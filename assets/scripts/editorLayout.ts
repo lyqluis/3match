@@ -37,7 +37,8 @@ export class EditorLayout extends Component {
 	}
 
 	private initGrid() {
-		this.node.removeAllChildren()
+		// this.node.removeAllChildren()
+		this.node.destroyAllChildren()
 		console.log(
 			"init grid",
 			this.node.getComponent(UITransform).width,

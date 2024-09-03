@@ -43,4 +43,5 @@ export class Main extends Component {
 		}
 		this.start()
 	}
+
 }

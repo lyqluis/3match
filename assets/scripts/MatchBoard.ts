@@ -61,8 +61,10 @@ export class MatchBoard extends Component {
 		if (count >= n) {
 			const removedBlocks = this.blockList.splice(index - n + 1, n)
 			removedBlocks.map((block) => {
-				block.node.removeFromParent()
-				block.origin.node.removeFromParent()
+				// block.node.removeFromParent()
+				// block.origin.node.removeFromParent()
+				block.node.destroy()
+				block.origin.node.destroy()
 			})
 			this.scheduleOnce(() => {
 				this.moveToResetOrder()

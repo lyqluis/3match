@@ -59,7 +59,8 @@ export class MatchLayout extends Component {
 			noShadow: false,
 		})
 		if (block) {
-			block.node.removeFromParent()
+			// block.node.removeFromParent()
+			block.node.destroy()
 		}
 	}
 
@@ -91,7 +92,8 @@ export class MatchLayout extends Component {
 	}
 
 	removeAllBlocks() {
-		this.node.removeAllChildren()
+		// this.node.removeAllChildren()
+		this.node.destroyAllChildren()
 	}
 
 	// 根据关卡数生成对应的 block
