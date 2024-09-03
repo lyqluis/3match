@@ -3,6 +3,7 @@ import {
 	Component,
 	Label,
 	Node,
+	ProgressBar,
 	Rect,
 	tween,
 	UITransform,
@@ -26,13 +27,16 @@ export class Order extends Component {
 	number: Node = null
 
 	private moveDistance = 500
+	private progressBar = null
+	private timer: number = 0
+
 	position = null
 	person = null
 	cuisines: Cuisine[] = null
 	time: number = null
 	data = {
 		cuisine: [],
-		time: 60,
+		time: 10,
 	}
 
 	setNum(n: number) {
@@ -43,16 +47,28 @@ export class Order extends Component {
 		return this.node.getComponent(UITransform).getBoundingBox()
 	}
 
-	removeOrder() {
+	private removeOrder() {
 		const orders = this.node.parent.getComponent(OrdersController).orders
 		orders.splice(orders.indexOf(this), 1)
 
 		this.node.destroy()
 	}
 
-	start() {}
+	start() {
+		this.timer = this.time = this.data.time // s
+		const progressBar = (this.progressBar = this.node
+			.getChildByName("progressBar")
+			.getComponent(ProgressBar))
+		progressBar.progress = 0
+	}
 
-	update(deltaTime: number) {}
+	update(deltaTime: number) {
+		this.timer -= deltaTime
+		this.progressBar.progress = this.timer / this.time
+		if (this.timer <= 0) {
+			this.scheduleOnce(this.moveDownToRemove, 1)
+		}
+	}
 
 	/**
 	 * animation
@@ -74,7 +90,7 @@ export class Order extends Component {
 				this.removeOrder()
 				const controller = this.node.parent.getComponent(OrdersController)
 				controller.refreshOrders(() => {
-					// todo create a new order, this should be called after resfreshing the orders
+					// create a new order, this should be called after resfreshing the orders
 					controller.createOrder()
 				})
 			})
