@@ -27,8 +27,9 @@ export class OrdersController extends Component {
 	}
 
 	createOrder() {
+		if (this.orders.length >= 2) return // max 2 orders
+
 		const lastOrder = this.orders[this.orders.length - 1]
-		// const spacingX = this.layout.spacingX
 		const spacingX = 20
 		let newX = 0
 		let newY = 0
@@ -39,10 +40,6 @@ export class OrdersController extends Component {
 			newY = lastRect.y
 		}
 		console.log("new xy", newX, newY)
-
-		// if new x > this.node.width, return
-		// const initPosition = new Vec3(newX, -500)
-		// const position = new Vec3(newX, newY)
 
 		this.orderId++
 		const orderNode = instantiate(this.preOrder)
@@ -56,7 +53,6 @@ export class OrdersController extends Component {
 		order.moveUpToShow(newX, newY)
 	}
 
-
 	clearOrders() {
 		this.orders.map((order) => {
 			order.node.destroy()
@@ -64,7 +60,19 @@ export class OrdersController extends Component {
 		this.orders = []
 	}
 
-  refreshOrders(){
-    
-  }
+	// reset position of orders after some order node removed
+	refreshOrders(callback?) {
+		this.orders.reduce((lastOrderRect, order) => {
+			const x = lastOrderRect ? lastOrderRect.x + lastOrderRect.width + 20 : 0
+			const y = lastOrderRect ? lastOrderRect.y : 0
+			// order.setPosition({ x, y })
+			tween(order.node)
+				.to(0.2, { position: new Vec3(x, y) })
+				.call(() => {
+					callback && callback()
+				})
+				.start()
+			return { ...order.getBoundingBox(), x, y }
+		}, null)
+	}
 }

@@ -22,10 +22,11 @@ const OrderData = {
 @ccclass("Order")
 export class Order extends Component {
 	@property(Node)
+	// test
 	number: Node = null
 
 	private moveDistance = 500
-
+	position = null
 	person = null
 	cuisines: Cuisine[] = null
 	time: number = null
@@ -68,11 +69,14 @@ export class Order extends Component {
 		const position = this.node.getPosition()
 		const newPosition = new Vec3(position.x, position.y - this.moveDistance)
 		tween(this.node)
-			.to(0.5, { position: newPosition })
+			.to(0.35, { position: newPosition })
 			.call(() => {
 				this.removeOrder()
-        // todo
-        this.node.parent.getComponent(OrdersController).refreshOrders()
+				const controller = this.node.parent.getComponent(OrdersController)
+				controller.refreshOrders(() => {
+					// todo create a new order, this should be called after resfreshing the orders
+					controller.createOrder()
+				})
 			})
 			.start()
 	}
