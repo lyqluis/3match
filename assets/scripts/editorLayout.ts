@@ -11,7 +11,7 @@ import {
 	Vec2,
 	Vec3,
 } from "cc"
-import { State } from "./state"
+import { Config } from "./state"
 import { MatchLayout } from "./MatchLayout"
 import { EventDispatcher } from "./EventDispatcher"
 const { ccclass, property } = _decorator
@@ -47,8 +47,8 @@ export class EditorLayout extends Component {
 		const offsetX = 5
 		const initX = (this.node.getComponent(UITransform).width / 2) * -1 + offsetX
 		const initY = this.node.getComponent(UITransform).height / 2
-		const rowN = State.row * 2 - 1
-		const colN = State.col * 2 - 1
+		const rowN = Config.row * 2 - 1
+		const colN = Config.col * 2 - 1
 		for (let i = 0; i < rowN; i++) {
 			// get prefab block's width / 2 and height / 2
 			const x = initX + 50 * (i + 1)
@@ -75,7 +75,7 @@ export class EditorLayout extends Component {
 		const position = this.node
 			.getComponent(UITransform)
 			.convertToNodeSpaceAR(new Vec3(touch.x, touch.y))
-		switch (State.editorMode) {
+		switch (Config.editorMode) {
 			case 1: // add block
 				this.addBlockByTouchPosition(position)
 				break
@@ -91,7 +91,7 @@ export class EditorLayout extends Component {
 		const position = this.node
 			.getComponent(UITransform)
 			.convertToNodeSpaceAR(new Vec3(touch.x, touch.y))
-		switch (State.editorMode) {
+		switch (Config.editorMode) {
 			case 1: // add block
 				this.addBlockByTouchPosition(position)
 				break

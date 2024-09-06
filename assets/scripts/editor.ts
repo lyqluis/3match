@@ -12,7 +12,7 @@ import {
 	UITransform,
 	Vec3,
 } from "cc"
-import { EDITOR_MODES, State } from "./state"
+import { EDITOR_MODES, Config } from "./state"
 import { EventDispatcher } from "./EventDispatcher"
 import { MatchLayout } from "./MatchLayout"
 const { ccclass, property } = _decorator
@@ -50,7 +50,7 @@ export class Editor extends Component {
 	update(deltaTime: number) {}
 
 	private getMode(mode?: number) {
-		this.modeValue.string = EDITOR_MODES[State.editorMode]
+		this.modeValue.string = EDITOR_MODES[Config.editorMode]
 	}
 
 	private updateBlockCount() {
@@ -76,7 +76,7 @@ export class Editor extends Component {
 
 	// click
 	changeMode(e: EventTouch, mode: string) {
-		State.editorMode = Number(mode)
+		Config.editorMode = Number(mode)
 		this.getMode()
 	}
 	import(e: EventTouch) {

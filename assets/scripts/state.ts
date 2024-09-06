@@ -3,12 +3,15 @@ const { ccclass, property } = _decorator
 
 export class gState {}
 
-export const State = {
-	mode: 1, // 1: game mode, 0: editor mode
+export const Config = {
 	row: 7, // num in row
 	col: 7, // num in col
 	editorMode: 1,
 	blockBoundingOffset: 10, // use in intersection check of block's inner bounding box
+}
+
+export const State = {
+	mode: 1, // 1: game mode, 0: editor mode
 	currentLevel: 1,
 }
 

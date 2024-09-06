@@ -46,12 +46,16 @@ const { ccclass, property } = _decorator
 // }
 
 // from video
+// on: EventDispatcher.getTarget().on(EventDispatcher.UPDATE_BLOCK_COUNT, this.updateBlockCount, this)
+// emit: EventDispatcher.getTarget().emit(EventDispatcher.SHOW_NOTIFICATION, "Created blocks successfully!")
+
 const eventTarget = new EventTarget()
 export class EventDispatcher {
 	private static data: EventDispatcher
 
 	public static UPDATE_BLOCK_COUNT = "UPDATE_BLOCK_COUNT"
 	public static SHOW_NOTIFICATION = "SHOW_NOTIFICATION"
+	public static UPDATE_TOOL = "UPDATE_TOOL"
 
 	static getTarget() {
 		if (!EventDispatcher.data) {

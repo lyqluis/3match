@@ -11,7 +11,7 @@ import {
 	UITransform,
 	Vec3,
 } from "cc"
-import { State } from "./state"
+import { Config } from "./state"
 import { BlockMap } from "./BlockMap"
 const { ccclass, property } = _decorator
 
@@ -39,7 +39,7 @@ export class Block extends Component {
 	}
 	getInnerBoundingBox(): Rect {
 		const rect = this.getBoundingBox()
-		const offset = State.blockBoundingOffset
+		const offset = Config.blockBoundingOffset
 		return new Rect(
 			rect.x + offset,
 			rect.y + offset,
