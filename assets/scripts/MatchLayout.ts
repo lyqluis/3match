@@ -223,14 +223,16 @@ export class MatchLayout extends Component {
 		}
 	}
 	onTouchEnd(e: EventTouch) {
+		console.log("on touch end")
 		if (!this.touchingBlock) return
 		this.touchingBlock.playScale()
 		this.node.parent
 			.getComponent(MatchController)
-			.moveBlockToHoldingArea(this.touchingBlock, this.preBlock)
+			.moveBlockToMatchBoardArea(this.touchingBlock, this.preBlock)
 		this.touchingBlock = null
 	}
 	onTouchCancel(e: EventTouch) {
+		console.log("on touch cancel")
 		if (this.touchingBlock) {
 			this.touchingBlock.playScale()
 			this.touchingBlock = null

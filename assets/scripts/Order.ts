@@ -27,7 +27,7 @@ export class Order extends Component {
 	number: Node = null
 
 	private moveDistance = 500
-	private progressBar = null
+	private progressBar: ProgressBar = null
 	private timer: number = 0
 
 	position = null

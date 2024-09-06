@@ -1,4 +1,13 @@
-import { _decorator, Component, Node, tween, UITransform, Vec3 } from "cc"
+import {
+	_decorator,
+	Color,
+	Component,
+	Node,
+	Sprite,
+	tween,
+	UITransform,
+	Vec3,
+} from "cc"
 import { Block } from "./Block"
 const { ccclass, property } = _decorator
 
@@ -9,6 +18,15 @@ export class MatchBoard extends Component {
 
 	blockList: Block[] = []
 
+	start() {
+		// make slots' opacity to 0
+		const wrapper = this.node.getChildByName("wrapper")
+		const slots = wrapper.children
+		slots.forEach((slot) => {
+			const sprite = slot.getComponent(Sprite)
+			sprite.color = new Color(255, 255, 255, 0)
+		})
+	}
 	addNode(node: Node) {
 		// get node's world position, then convert to local position
 		const position = this.node
@@ -44,7 +62,7 @@ export class MatchBoard extends Component {
 			.convertToWorldSpaceAR(block.getPosition())
 	}
 
-	removeMatchedBlocks(n = 3): boolean {
+	removeMatchedBlocks(n = 3): Block {
 		let lastBlock
 		let count = 0
 		let index = -1
@@ -60,18 +78,18 @@ export class MatchBoard extends Component {
 		}
 		if (count >= n) {
 			const removedBlocks = this.blockList.splice(index - n + 1, n)
+			const removedBlock = removedBlocks[0]
 			removedBlocks.map((block) => {
-				// block.node.removeFromParent()
-				// block.origin.node.removeFromParent()
-				block.node.destroy()
-				block.origin.node.destroy()
+				block.node.removeFromParent()
+				block.origin.node.removeFromParent()
+				// block.node.destroy()
+				// block.origin.node.destroy()
 			})
 			this.scheduleOnce(() => {
 				this.moveToResetOrder()
 			}, 0.2)
-			return true
+			return removedBlock
 		}
-		return false
 	}
 
 	clearAll() {

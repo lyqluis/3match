@@ -12,6 +12,8 @@ import { MatchHolding } from "./MatchHolding"
 import { MatchBoard } from "./MatchBoard"
 import { State } from "./state"
 import { Block } from "./Block"
+import { FoodStorage } from "./FoodStorage"
+
 const { ccclass, property } = _decorator
 
 @ccclass("MatchController")
@@ -22,6 +24,8 @@ export class MatchController extends Component {
 	matchHolding: MatchHolding = null
 	@property({ type: MatchBoard })
 	matchBoard: MatchBoard = null
+	@property({ type: FoodStorage })
+	foodStorage: FoodStorage = null
 
 	UITransform: UITransform = null
 
@@ -47,7 +51,7 @@ export class MatchController extends Component {
 	// 2. move the copy block to match board's position in controller area
 	// 3. set the copy block into match board area
 	// ? is it possible to move the origin block to holding area directly?
-	moveBlockToHoldingArea(block: Block, preBlock: Prefab) {
+	moveBlockToMatchBoardArea(block: Block, preBlock: Prefab) {
 		const clonedBlock = block.clone(this.node, preBlock)
 		// refresh shadow
 		this.matchLayout.refreshShadow()
@@ -61,12 +65,19 @@ export class MatchController extends Component {
 			.call(() => {
 				// set block into match board area
 				this.matchBoard.addNode(clonedBlock.node)
-				const isDelected = this.matchBoard.removeMatchedBlocks()
-				if (isDelected) {
+				const deletedBlock = this.matchBoard.removeMatchedBlocks()
+				if (deletedBlock) {
 					// todo
 					// play sound
 					// if level compelted, show next level
 					// this.nextLevel()
+					// TODO
+					// call food storage controller to create block's food
+					if (deletedBlock.data.type === "food") {
+						this.foodStorage.addFood(deletedBlock)
+					} else if (deletedBlock.data.type === "tool") {
+						// add tool to the tools controller
+					}
 				}
 			})
 			.start()
