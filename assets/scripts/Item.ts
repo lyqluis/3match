@@ -5,13 +5,17 @@ import {
 	Label,
 	Node,
 	Rect,
+	resources,
+	Sprite,
+	SpriteFrame,
 	tween,
 	UITransform,
 	Vec3,
 } from "cc"
+import { loadImage } from "./utils"
 const { ccclass, property } = _decorator
 
-const MAX = 80 // width or height
+const MAX = 85 // width or height
 
 @ccclass("Item")
 export class Item extends Component {
@@ -24,20 +28,32 @@ export class Item extends Component {
 		// // this.node.on(Input.EventType.TOUCH_CANCEL, this.onTouchCancel, this)
 	}
 
-	init(data) {
+	async init(data) {
 		this.data = data
-		// TODO: init img
+		await this.setImg(data.type, data.name)
 		this.hideCount()
 		this.changeSize()
 	}
 
-	changeSize(max = 80) {
-		// find the small one in width or height
+	async setImg(type, name) {
+		try {
+			const spriteFrame: any = await loadImage(
+				`imgs/${type}/${name}/spriteFrame`
+			)
+			this.node.getComponent(Sprite).spriteFrame = spriteFrame
+		} catch (err) {
+			console.error("load img error", err)
+		}
+	}
+
+	changeSize() {
+		// find the bigger one in width or height
 		const uiTransform = this.node.getComponent(UITransform)
 		const { width, height } = uiTransform
-		const min = Math.min(width, height)
-		const k = MAX / min
+		const longer = Math.max(width, height)
+		const k = MAX / longer
 
+		// uiTransform.setContentSize(width * k, height * k)
 		uiTransform.width = width * k
 		uiTransform.height = height * k
 	}

@@ -58,7 +58,10 @@ export class Block extends Component {
 
 	setImg(img: SpriteFrame) {
 		this.img = img
-		this.node.getChildByName("item").getComponent(Sprite).spriteFrame = img
+		const node = this.node.getChildByName("item")
+		node.getComponent(Sprite).spriteFrame = img
+		// change image size
+		// node.getComponent(UITransform).setContentSize()
 	}
 
 	init(img: SpriteFrame, imgIndex: number, needAnimation?: boolean) {

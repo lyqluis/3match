@@ -40,7 +40,6 @@ export class FoodStorage extends Component {
 		// food component
 		const food = foodNode.getComponent(Item)
 		food.init(block.data)
-
 		// add food node to the slot
 		const slotNode = this.findEmptySlot()
 		foodNode.parent = slotNode

@@ -1,4 +1,4 @@
-import { Node, UITransform } from "cc"
+import { Node, resources, SpriteFrame, UITransform } from "cc"
 
 export const shuffleArray = (array) => {
 	for (let i = array.length - 1; i > 0; i--) {
@@ -34,4 +34,22 @@ export const getTouchItem = (touchPosition, config: getTouchItemConfig) => {
 		}
 	}
 	return null
+}
+
+export const loadImage = async (path: string) => {
+	return new Promise((resolve, reject) => {
+		resources.load(path, SpriteFrame, (err, spriteFrame) => {
+			if (err) reject(err)
+			spriteFrame.reset({
+				// @ts-ignore
+				originalSize: {
+					...spriteFrame.originalSize,
+					width: spriteFrame.rect.width,
+					height: spriteFrame.rect.height,
+				},
+			})
+			console.log("load image finished", spriteFrame)
+			resolve(spriteFrame)
+		})
+	})
 }
