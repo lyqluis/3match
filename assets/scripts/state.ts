@@ -13,6 +13,7 @@ export const Config = {
 export const State = {
 	mode: 1, // 1: game mode, 0: editor mode
 	currentLevel: 1,
+	currentTool: null,
 }
 
 export const EDITOR_MODES = {

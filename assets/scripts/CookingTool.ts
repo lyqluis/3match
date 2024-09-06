@@ -7,6 +7,8 @@ import {
 	tween,
 	Vec3,
 } from "cc"
+import { State } from "./state"
+import { EventDispatcher } from "./EventDispatcher"
 const { ccclass, property } = _decorator
 
 @ccclass("CookingTool")
@@ -19,6 +21,7 @@ export class CookingTool extends Component {
 	progressBarNode: Node = null
 	progressBar: ProgressBar = null
 	isWorking: boolean = false
+	isSelected: boolean = false
 
 	startBtn: Node = null
 
@@ -29,6 +32,12 @@ export class CookingTool extends Component {
 		this.startBtn = this.node.getChildByName("start-button")
 		this.setActive(true)
 		this.progressBarNode.active = false
+		this.node.on(Input.EventType.TOUCH_END, this.onTouchEnd, this)
+		EventDispatcher.getTarget().on(
+			EventDispatcher.UPDATE_COOKING_TOOL,
+			this.updateSelected,
+			this
+		)
 	}
 
 	update(deltaTime: number) {
@@ -55,18 +64,32 @@ export class CookingTool extends Component {
 
 	startCooking() {
 		console.log("on click", this.startBtn)
-		if (this.isWorking) return
+		if (this.isWorking || !this.isSelected) return
 
 		// button animation
 		tween(this.startBtn)
-			.to(0.1, { scale: new Vec3(1.2, 1.2, 1.2) })
+			.to(0.1, { scale: new Vec3(1.2, 1.2, 1.2) }, { easing: "smooth" })
+			.to(0.1, { scale: new Vec3(1, 1, 1) }, { easing: "smooth" })
+			.call(() => {
+				this.resetTimer()
+				this.isWorking = true
+				this.setActive(false)
+				this.progressBarNode.active = true
+				EventDispatcher.getTarget().emit(
+					EventDispatcher.UPDATE_COOKING_TOOL,
+					null
+				)
+			})
 			.to(0.1, { scale: new Vec3(1, 1, 1) })
 			.call(() => {
 				this.resetTimer()
 				this.isWorking = true
 				this.setActive(false)
 				this.progressBarNode.active = true
-				console.log("tween call back", this.startBtn)
+				EventDispatcher.getTarget().emit(
+					EventDispatcher.UPDATE_COOKING_TOOL,
+					null
+				)
 			})
 			.start()
 	}
@@ -83,11 +106,21 @@ export class CookingTool extends Component {
 		// create cuisine
 	}
 
-	zoomInAndOut(callback) {
-		tween(this.startBtn)
-			.to(0.1, { scale: new Vec3(1.2, 1.2) })
-			.to(0.1, { scale: new Vec3(1, 1) })
-			.call(callback)
-			.start()
+	onTouchEnd() {
+		if (State.currentTool !== this) {
+			State.currentTool = this
+			this.isSelected = true
+		}
+		EventDispatcher.getTarget().emit(EventDispatcher.UPDATE_COOKING_TOOL, this)
+		console.log("select tool", State.currentTool)
+	}
+
+	/**
+	 * animation
+	 */
+	updateSelected(newCookingTool: CookingTool) {
+		const isSelected = (this.isSelected = newCookingTool === this)
+		const scale = isSelected ? new Vec3(1.2, 1.2, 1.2) : new Vec3(1, 1, 1)
+		tween(this.node).to(0.1, { scale: scale }, { easing: "linear" }).start()
 	}
 }

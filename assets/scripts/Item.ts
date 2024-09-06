@@ -26,6 +26,7 @@ export class Item extends Component {
 
 	init(data) {
 		this.data = data
+		// TODO: init img
 		this.hideCount()
 		this.changeSize()
 	}
