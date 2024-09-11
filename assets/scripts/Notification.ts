@@ -30,3 +30,6 @@ export class Notification extends Component {
 			.start()
 	}
 }
+
+export const Notify = (message: string) =>
+	EventDispatcher.getTarget().emit(EventDispatcher.SHOW_NOTIFICATION, message)
