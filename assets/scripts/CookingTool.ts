@@ -14,7 +14,7 @@ import { State } from "./state"
 import { EventDispatcher } from "./EventDispatcher"
 import { Item } from "./Item"
 import { Notify } from "./Notification"
-import { setParentInPosition } from "./utils"
+import { loadImage, setParentInPosition } from "./utils"
 const { ccclass, property } = _decorator
 
 @ccclass("CookingTool")
@@ -38,7 +38,7 @@ export class CookingTool extends Component {
 		this.progressBar = this.progressBarNode.getComponent(ProgressBar)
 		this.startBtn = this.node.getChildByName("start-button")
 		this.slots = this.node.getChildByName("container").children
-		this.setActive(true)
+		this.setActive(false)
 		this.progressBarNode.active = false
 		this.node.on(Input.EventType.TOUCH_END, this.onTouchEnd, this)
 		EventDispatcher.getTarget().on(
@@ -51,6 +51,22 @@ export class CookingTool extends Component {
 	update(deltaTime: number) {
 		if (this.isWorking) {
 			this.updateTimer(deltaTime)
+		}
+	}
+
+	// TODO ?
+	async activate(data) {
+		this.tool = data
+		// set tool sprite frame
+		try {
+			const spriteFrame: any = await loadImage(
+				`imgs/${data.type}/${data.name}/spriteFrame`
+			)
+			const toolSpriteNode = this.node.getChildByPath("start-button/tool")
+			toolSpriteNode.getComponent(Sprite).spriteFrame = spriteFrame
+			this.setActive(true)
+		} catch (err) {
+			console.error("load img error", err)
 		}
 	}
 

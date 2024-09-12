@@ -13,6 +13,7 @@ import { MatchBoard } from "./MatchBoard"
 import { State } from "./state"
 import { Block } from "./Block"
 import { FoodStorage } from "./FoodStorage"
+import { CookingTool } from "./CookingTool"
 
 const { ccclass, property } = _decorator
 
@@ -26,6 +27,8 @@ export class MatchController extends Component {
 	matchBoard: MatchBoard = null
 	@property({ type: FoodStorage })
 	foodStorage: FoodStorage = null
+	@property({ type: CookingTool })
+	cookingTools: CookingTool[] = []
 
 	UITransform: UITransform = null
 
@@ -72,15 +75,23 @@ export class MatchController extends Component {
 					// play sound
 					// if level compelted, show next level
 					// this.nextLevel()
-					// TODO
-					// call food storage controller to create block's food
 					if (deletedBlock.data.type === "food") {
+						// call food storage controller to create block's food
 						this.foodStorage.addFood(deletedBlock)
 					} else if (deletedBlock.data.type === "tool") {
+						// TODO
 						// add tool to the tools controller
+						this.activateCookingTool(deletedBlock.data)
 					}
 				}
 			})
 			.start()
+	}
+
+	activateCookingTool(data) {
+		const tools = ["pan", "drinkmachine", "pot"]
+		const i = tools.findIndex((name) => data.name === name)
+		const tool = this.cookingTools[i]
+		tool.activate(data)
 	}
 }

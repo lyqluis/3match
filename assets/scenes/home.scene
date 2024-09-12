@@ -54,7 +54,7 @@
     },
     "autoReleaseAssets": false,
     "_globals": {
-      "__id__": 327
+      "__id__": 333
     },
     "_id": "8e902a9f-761d-4733-97d1-b0a44dc2c6a8"
   },
@@ -1362,7 +1362,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -463.36699999999996,
+      "y": -463.3670000000001,
       "z": 0
     },
     "_lrot": {
@@ -2422,7 +2422,7 @@
     "_left": -5,
     "_right": -5,
     "_top": 0,
-    "_bottom": -51.73400000000004,
+    "_bottom": -51.734000000000094,
     "_horizontalCenter": 0,
     "_verticalCenter": 0,
     "_isAbsLeft": true,
@@ -2547,6 +2547,11 @@
     "foodStorage": {
       "__id__": 69
     },
+    "cookingTools": [
+      null,
+      null,
+      null
+    ],
     "_id": "17MaeSf/BCJZbNVeDOVOFB"
   },
   {
@@ -11656,7 +11661,17 @@
     "asset": null,
     "fileId": "8e902a9f-761d-4733-97d1-b0a44dc2c6a8",
     "instance": null,
-    "targetOverrides": null,
+    "targetOverrides": [
+      {
+        "__id__": 327
+      },
+      {
+        "__id__": 329
+      },
+      {
+        "__id__": 331
+      }
+    ],
     "nestedPrefabInstanceRoots": [
       {
         "__id__": 218
@@ -11670,30 +11685,99 @@
     ]
   },
   {
+    "__type__": "cc.TargetOverrideInfo",
+    "source": {
+      "__id__": 68
+    },
+    "sourceInfo": null,
+    "propertyPath": [
+      "cookingTools",
+      "0"
+    ],
+    "target": {
+      "__id__": 218
+    },
+    "targetInfo": {
+      "__id__": 328
+    }
+  },
+  {
+    "__type__": "cc.TargetInfo",
+    "localID": [
+      "baTqvKej5PcKLVRfPubH4j"
+    ]
+  },
+  {
+    "__type__": "cc.TargetOverrideInfo",
+    "source": {
+      "__id__": 68
+    },
+    "sourceInfo": null,
+    "propertyPath": [
+      "cookingTools",
+      "1"
+    ],
+    "target": {
+      "__id__": 241
+    },
+    "targetInfo": {
+      "__id__": 330
+    }
+  },
+  {
+    "__type__": "cc.TargetInfo",
+    "localID": [
+      "baTqvKej5PcKLVRfPubH4j"
+    ]
+  },
+  {
+    "__type__": "cc.TargetOverrideInfo",
+    "source": {
+      "__id__": 68
+    },
+    "sourceInfo": null,
+    "propertyPath": [
+      "cookingTools",
+      "2"
+    ],
+    "target": {
+      "__id__": 249
+    },
+    "targetInfo": {
+      "__id__": 332
+    }
+  },
+  {
+    "__type__": "cc.TargetInfo",
+    "localID": [
+      "baTqvKej5PcKLVRfPubH4j"
+    ]
+  },
+  {
     "__type__": "cc.SceneGlobals",
     "ambient": {
-      "__id__": 328
-    },
-    "shadows": {
-      "__id__": 329
-    },
-    "_skybox": {
-      "__id__": 330
-    },
-    "fog": {
-      "__id__": 331
-    },
-    "octree": {
-      "__id__": 332
-    },
-    "skin": {
-      "__id__": 333
-    },
-    "lightProbeInfo": {
       "__id__": 334
     },
-    "postSettings": {
+    "shadows": {
       "__id__": 335
+    },
+    "_skybox": {
+      "__id__": 336
+    },
+    "fog": {
+      "__id__": 337
+    },
+    "octree": {
+      "__id__": 338
+    },
+    "skin": {
+      "__id__": 339
+    },
+    "lightProbeInfo": {
+      "__id__": 340
+    },
+    "postSettings": {
+      "__id__": 341
     },
     "bakedWithStationaryMainLight": false,
     "bakedWithHighpLightmap": false

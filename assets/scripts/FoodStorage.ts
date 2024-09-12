@@ -14,7 +14,6 @@ import {
 import { Block } from "./Block"
 import { Item } from "./Item"
 import { State } from "./state"
-import { EventDispatcher } from "./EventDispatcher"
 import { Notify } from "./Notification"
 const { ccclass, property } = _decorator
 
