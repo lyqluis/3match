@@ -11,3 +11,15 @@
   - [x] clear all blocks
   - [x] import & export data
   - [ ] level config
+- [x] Item / Food
+  - [ ] optimization: delete default img when init
+- [x] Order
+- [x] Cooking Tool
+  - [-] add cooking tool
+  - [x] move food to cooking tool
+  - [x] select cooking tool
+- [x] Food Storge
+  - [x] show food with count in storage
+  - [x] reset order
+- [ ] Toast
+  - [ ] close button

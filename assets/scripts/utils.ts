@@ -1,4 +1,4 @@
-import { Node, resources, SpriteFrame, UITransform } from "cc"
+import { Node, Prefab, resources, SpriteFrame, UITransform } from "cc"
 
 export const shuffleArray = (array) => {
 	for (let i = array.length - 1; i > 0; i--) {
@@ -52,4 +52,26 @@ export const loadImage = async (path: string) => {
 			resolve(spriteFrame)
 		})
 	})
+}
+
+export const loadPrefab = async (path: string) => {
+	return new Promise((resolve, reject) => {
+		resources.load(path, Prefab, (err, prefab) => {
+			if (err) reject(err)
+			console.log("load prefab finished", prefab)
+			resolve(prefab)
+		})
+	})
+}
+
+// 原地变更父元素
+export const setParentInPosition = (node: Node, newParent: Node) => {
+	// const pos = node.getWorldPosition()
+	// const newPos = newParent.getComponent(UITransform).convertToNodeSpaceAR(pos)
+	// node.setParent(newParent)
+	// node.setPosition(newPos)
+	// or
+	const pos = node.getWorldPosition()
+	node.setParent(newParent)
+	node.setWorldPosition(pos)
 }

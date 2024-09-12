@@ -55,7 +55,7 @@ export class MatchController extends Component {
 		const clonedBlock = block.clone(this.node, preBlock)
 		// refresh shadow
 		this.matchLayout.refreshShadow()
-		// todo
+
 		const slotPosition = this.matchBoard.getSlotPosition(clonedBlock)
 		const localPos = this.UITransform.convertToNodeSpaceAR(slotPosition)
 
@@ -65,6 +65,7 @@ export class MatchController extends Component {
 			.call(() => {
 				// set block into match board area
 				this.matchBoard.addNode(clonedBlock.node)
+				// remove matched 3 blocks
 				const deletedBlock = this.matchBoard.removeMatchedBlocks()
 				if (deletedBlock) {
 					// todo

@@ -1,20 +1,27 @@
 import {
 	_decorator,
+	Color,
 	Component,
 	Input,
 	Node,
 	ProgressBar,
+	Sprite,
 	tween,
+	UITransform,
 	Vec3,
 } from "cc"
 import { State } from "./state"
 import { EventDispatcher } from "./EventDispatcher"
+import { Item } from "./Item"
+import { Notify } from "./Notification"
+import { setParentInPosition } from "./utils"
 const { ccclass, property } = _decorator
 
 @ccclass("CookingTool")
 export class CookingTool extends Component {
 	shadow: Node = null
-	materials = [] // 食材列表
+	materials: Item[] = [] // 食材列表
+	slots: Node[] = [] // 存放食材的格子
 	tool = null
 	cookingTime: number = 5 // s
 	timer: number = 0
@@ -30,6 +37,7 @@ export class CookingTool extends Component {
 		this.progressBarNode = this.node.getChildByName("ProgressBar")
 		this.progressBar = this.progressBarNode.getComponent(ProgressBar)
 		this.startBtn = this.node.getChildByName("start-button")
+		this.slots = this.node.getChildByName("container").children
 		this.setActive(true)
 		this.progressBarNode.active = false
 		this.node.on(Input.EventType.TOUCH_END, this.onTouchEnd, this)
@@ -60,38 +68,39 @@ export class CookingTool extends Component {
 
 	setActive(active: boolean) {
 		this.shadow.active = !active
+		const color = active ? new Color(255, 255, 255) : new Color(68, 68, 68)
+		this.materials.forEach((food) => {
+			food.node.getComponent(Sprite).color = color
+		})
+	}
+
+	getEmptySlot() {
+		const i = this.materials.length
+		if (i >= this.slots.length) console.error("food is more than empty slot")
+		return this.slots[i]
 	}
 
 	startCooking() {
 		console.log("on click", this.startBtn)
-		if (this.isWorking || !this.isSelected) return
+		if (!this.isSelected) {
+			Notify("请先选中一个烹饪工具")
+			console.error("choose a cooking tool first")
+			return
+		}
+		if (this.isWorking) return
 
 		// button animation
-		tween(this.startBtn)
-			.to(0.1, { scale: new Vec3(1.2, 1.2, 1.2) }, { easing: "smooth" })
-			.to(0.1, { scale: new Vec3(1, 1, 1) }, { easing: "smooth" })
-			.call(() => {
-				this.resetTimer()
-				this.isWorking = true
-				this.setActive(false)
-				this.progressBarNode.active = true
-				EventDispatcher.getTarget().emit(
-					EventDispatcher.UPDATE_COOKING_TOOL,
-					null
-				)
-			})
-			.to(0.1, { scale: new Vec3(1, 1, 1) })
-			.call(() => {
-				this.resetTimer()
-				this.isWorking = true
-				this.setActive(false)
-				this.progressBarNode.active = true
-				EventDispatcher.getTarget().emit(
-					EventDispatcher.UPDATE_COOKING_TOOL,
-					null
-				)
-			})
-			.start()
+		this.buttonScale(() => {
+			this.resetTimer()
+			this.isWorking = true
+			this.setActive(false)
+			this.progressBarNode.active = true
+			EventDispatcher.getTarget().emit(
+				EventDispatcher.UPDATE_COOKING_TOOL,
+				null
+			)
+			State.currentTool = null
+		})
 	}
 
 	finishCooking() {
@@ -100,13 +109,16 @@ export class CookingTool extends Component {
 		this.progressBarNode.active = false
 		this.resetTimer()
 
-		console.log("finish cooking", this.startBtn)
-		// todo: finish cooking
+		console.log("finish cooking")
+
+		// TODO: finish cooking
 		// delete foods
 		// create cuisine
 	}
 
 	onTouchEnd() {
+		if (this.isWorking || this.isSelected) return
+
 		if (State.currentTool !== this) {
 			State.currentTool = this
 			this.isSelected = true
@@ -115,12 +127,60 @@ export class CookingTool extends Component {
 		console.log("select tool", State.currentTool)
 	}
 
+	// add food node & food to materials
+	addFood(food: Item) {
+		// set node
+		const localPosition = this.node
+			.getComponent(UITransform)
+			.convertToNodeSpaceAR(food.node.getWorldPosition())
+		food.node.setParent(this.node)
+		food.node.setPosition(localPosition)
+		// set food
+		this.materials.push(food)
+	}
+
 	/**
 	 * animation
 	 */
+	buttonScale(callback: Function) {
+		tween(this.startBtn)
+			.to(0.1, { scale: new Vec3(1.2, 1.2, 1.2) }, { easing: "smooth" })
+			.to(0.1, { scale: new Vec3(1, 1, 1) }, { easing: "smooth" })
+			.call(callback)
+			.start()
+	}
+
 	updateSelected(newCookingTool: CookingTool) {
 		const isSelected = (this.isSelected = newCookingTool === this)
 		const scale = isSelected ? new Vec3(1.2, 1.2, 1.2) : new Vec3(1, 1, 1)
 		tween(this.node).to(0.1, { scale: scale }, { easing: "linear" }).start()
+	}
+
+	async moveFoodFromStorage(food: Item, foodStorage) {
+		if (this.materials.length >= this.slots.length) return
+		console.log("move food", food)
+		// 1. move food node into the tool node
+		if (food.count > 1) {
+			// clone a food
+			const clonedFood = await food.clone(this.node)
+			food.count--
+			food.showCount()
+			food = clonedFood
+		} else {
+			// food.count === 1
+			setParentInPosition(food.node, this.node)
+		}
+		// 2. get Tool's empty slot position
+		const slot = this.getEmptySlot()
+		const slotLocalPosition = slot.getPosition()
+		// 3. move the food node with animation
+		tween(food.node)
+			.to(0.2, { position: slotLocalPosition }, { easing: "smooth" })
+			.call(() => {
+				!food.origin && foodStorage.removeFood(food.data.name)
+				this.addFood(food)
+				foodStorage.moveToResetOrder()
+			})
+			.start()
 	}
 }

@@ -13,6 +13,9 @@ import {
 } from "cc"
 import { Block } from "./Block"
 import { Item } from "./Item"
+import { State } from "./state"
+import { EventDispatcher } from "./EventDispatcher"
+import { Notify } from "./Notification"
 const { ccclass, property } = _decorator
 
 @ccclass("FoodStorage")
@@ -34,7 +37,6 @@ export class FoodStorage extends Component {
 	update(deltaTime: number) {}
 
 	createFood(block: Block): Item {
-		// TODO: create food
 		// instantiate food node
 		const foodNode = instantiate(this.preFood)
 		// food component
@@ -61,6 +63,17 @@ export class FoodStorage extends Component {
 		}
 	}
 
+	removeFood(foodName: string) {
+		const food = this.foodList.find((item) => item.name === foodName)
+		if (food) {
+			if (food.component.count > 1) {
+				food.component.count--
+			} else {
+				this.foodList = this.foodList.filter((item) => item.name !== foodName)
+			}
+		}
+	}
+
 	findEmptySlot(): Node {
 		return this.slots.find((slot) => slot.children.length === 0)
 	}
@@ -80,7 +93,7 @@ export class FoodStorage extends Component {
 			const foodRect = food.getBoundingBox()
 
 			// if food's bounds contains localPosition, return block
-			if (food.getBoundingBox().contains(new Vec2(posInSlot.x, posInSlot.y))) {
+			if (foodRect.contains(new Vec2(posInSlot.x, posInSlot.y))) {
 				return food
 			}
 		}
@@ -88,7 +101,7 @@ export class FoodStorage extends Component {
 	}
 
 	onTouchStart(event: EventTouch) {
-		console.log("on touch start")
+		console.log("on touch start")
 		const touch = event.getUILocation()
 		const food = (this.touchingFood = this.getTouchFood(
 			new Vec3(touch.x, touch.y)
@@ -101,9 +114,18 @@ export class FoodStorage extends Component {
 
 	onTouchEnd(event: EventTouch) {
 		if (!this.touchingFood) return
+		console.log("on touch end")
 		this.touchingFood.playScale(false)
-		// TODO: move food to tool area
-    
+		// find current selected cooking tool
+		const tool = State.currentTool
+		// move food to cooking	tool area
+		if (tool) {
+			tool.moveFoodFromStorage(this.touchingFood, this)
+		} else {
+			Notify("请先选中一个烹饪工具")
+			console.error("choose a cooking tool first")
+		}
+
 		this.touchingFood = null
 	}
 
@@ -112,5 +134,29 @@ export class FoodStorage extends Component {
 			this.touchingFood.playScale(false)
 			this.touchingFood = null
 		}
+	}
+
+	/**
+	 * animation
+	 */
+	moveToResetOrder() {
+		// 1. iterate the list
+		this.foodList.forEach((foodItem, i) => {
+			const food = foodItem.component
+			// 2. set food to the same index slot's position in the slot list
+			const slotNode = this.slots[i]
+			const slotWorldPosition = slotNode.getWorldPosition()
+			const position = food.node.parent
+				.getComponent(UITransform)
+				.convertToNodeSpaceAR(slotWorldPosition)
+			// 3. move old food node to the new slot position
+			tween(food.node)
+				.to(0.1, { position }, { easing: "smooth" })
+				.call(() => {
+					food.node.setParent(slotNode)
+					food.node.setPosition(new Vec3(0, 0))
+				})
+				.start()
+		})
 	}
 }
