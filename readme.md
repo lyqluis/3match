@@ -19,8 +19,8 @@
   - [x] move food to cooking tool
   - [x] select cooking tool
   - [x] finish cooking
+  - [x] bug: can be selected when inactive
   - [ ] bug: rice + chiken =/=> rubbish, => riceball
-  - [ ] bug: can be selected when inactive
 - [x] Food Storge
   - [x] show food with count in storage
   - [x] reset order

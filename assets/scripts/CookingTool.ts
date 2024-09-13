@@ -151,11 +151,14 @@ export class CookingTool extends Component {
 			Notify(`${cuisine.data.title} 烹饪成功！`)
 		}
 		// delete foods
-		this.materials.forEach((food, i) => i > 0 && food.node.destroy())
+		this.materials = this.materials.filter((food, i) => {
+			i > 0 && food.node.destroy()
+			return i === 0
+		})
 	}
 
 	onTouchEnd() {
-		if (this.isWorking || this.isSelected) return
+		if (this.isWorking || this.isSelected || this.shadow.active) return
 
 		if (State.currentTool !== this) {
 			State.currentTool = this
