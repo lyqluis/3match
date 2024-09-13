@@ -70,6 +70,12 @@ export class CookingTool extends Component {
 				this.node.getChildByPath("start-button/tool"))
 			toolSpriteNode.getComponent(Sprite).spriteFrame = spriteFrame
 			this.setActive(true)
+			// set tool img into shadow node
+			const shadowToolNodeSprite = this.shadow
+				.getChildByPath("cook-tool-wrapper/tool")
+				.getComponent(Sprite)
+			shadowToolNodeSprite.spriteFrame = spriteFrame
+			shadowToolNodeSprite.color = new Color(68, 68, 68)
 		} catch (err) {
 			console.error("load img error", err)
 		}
@@ -90,7 +96,6 @@ export class CookingTool extends Component {
 	setActive(active: boolean) {
 		this.shadow.active = !active
 		const color = active ? new Color(255, 255, 255) : new Color(68, 68, 68)
-		if (this.tool) this.tool.getComponent(Sprite).color = color
 		this.materials.forEach((food) => {
 			food.node.getComponent(Sprite).color = color
 		})

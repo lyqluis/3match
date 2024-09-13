@@ -57,6 +57,7 @@ export class Order extends Component {
 		this.node.destroy()
 	}
 
+	// TODO: order's price data
 	private generateOrderDate() {
 		// get current level's config's order list
 		const levelConfig = getLevelConfig(State.currentLevel ?? 1)
@@ -89,7 +90,6 @@ export class Order extends Component {
 		changeImageSize(node, { maxHeight: 85 })
 	}
 
-	// TODO
 	init(id?: number) {
 		// set cuisin data
 		this.data = this.generateOrderDate()
