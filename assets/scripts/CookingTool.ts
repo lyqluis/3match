@@ -145,7 +145,11 @@ export class CookingTool extends Component {
 		const cuisineData = findCuisineById(cuisineId)
 		const cuisine = this.materials[0]
 		cuisine.init(cuisineData)
-		Notify(`${cuisine.data.title} 烹饪成功！`)
+		if (cuisine.data.name === "rubbish") {
+			Notify(`烹饪失败！得到 ${cuisine.data.title}`)
+		} else {
+			Notify(`${cuisine.data.title} 烹饪成功！`)
+		}
 		// delete foods
 		this.materials.forEach((food, i) => i > 0 && food.node.destroy())
 	}
@@ -171,6 +175,11 @@ export class CookingTool extends Component {
 		food.node.setPosition(localPosition)
 		// set food
 		this.materials.push(food)
+	}
+
+	clearMaterials() {
+		this.materials.forEach((food) => food.node.destroy())
+		this.materials = []
 	}
 
 	/**

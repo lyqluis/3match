@@ -18,10 +18,13 @@
   - [x] add cooking tool
   - [x] move food to cooking tool
   - [x] select cooking tool
-  - [ ] finish cooking
+  - [x] finish cooking
+  - [ ] bug: rice + chiken =/=> rubbish, => riceball
+  - [ ] bug: can be selected when inactive
 - [x] Food Storge
   - [x] show food with count in storage
   - [x] reset order
 - [ ] Toast
   - [ ] close button
 - [x] next level load
+- [x] add Rubbish button

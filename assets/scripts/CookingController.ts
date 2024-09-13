@@ -1,17 +1,14 @@
-import { _decorator, Component, Node } from 'cc';
-const { ccclass, property } = _decorator;
+import { _decorator, Component, Node } from "cc"
+import { State } from "./state"
+import { CookingTool } from "./CookingTool"
+import { Notify } from "./Notification"
+const { ccclass, property } = _decorator
 
-@ccclass('CookingController')
+@ccclass("CookingController")
 export class CookingController extends Component {
+	tashNode: Node = null
 
-    
-
-    start() {
-
-    }
-
-    update(deltaTime: number) {
-        
-    }
+	protected onLoad(): void {
+		this.tashNode = this.node.getChildByName("trash")
+	}
 }
-
