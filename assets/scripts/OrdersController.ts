@@ -36,6 +36,7 @@ export class OrdersController extends Component {
 	}
 
 	createOrder() {
+		this.scheduleOnce(() => console.log("tst schedule"), 5)
 		if (this.orders.length >= 2) return // max 2 orders
 
 		const lastOrder = this.orders[this.orders.length - 1]
@@ -86,6 +87,6 @@ export class OrdersController extends Component {
 			return { ...order.getBoundingBox(), x, y }
 		}, null)
 		// create new order, this should be called after resfreshing the orders
-		this.scheduleOnce(this.createOrder, Config.orderInterval)
+		this.scheduleOnce(() => this.createOrder(), Config.orderInterval)
 	}
 }

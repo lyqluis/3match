@@ -80,10 +80,20 @@ export class Order extends Component {
 		}
 	}
 
+	private async setRandomAvatar() {
+		const avatars = [1, 2, 3, 4]
+		const i = randomNum(0, avatars.length - 1)
+		const avatarName = avatars[i] + ""
+		const node = this.node.getChildByName("person")
+		await setImageToNode(node, "person", avatarName)
+		changeImageSize(node, { maxHeight: 85 })
+	}
+
 	// TODO
 	init(id?: number) {
+		// set cuisin data
 		this.data = this.generateOrderDate()
-		// set image
+		// set cuisine image
 		this.data.cuisines.map(async (c, i) => {
 			const cuisine = cuisineMap[c]
 			const node = this.node.getChildByName("cuisines-wrapper").children[i]
@@ -94,14 +104,13 @@ export class Order extends Component {
 			const labelNode = node.getChildByName("name")
 			labelNode.getComponent(Label).string = cuisine.title
 		})
+		this.setRandomAvatar()
 		// set id
 		id && this.setNum(id)
 	}
 
 	start() {
-		console.log("order start")
-		// TODO init
-		// this.init()
+		// console.log("order start")
 		this.timer = this.time = this.data.time // s
 		const progressBar = (this.progressBar = this.node
 			.getChildByName("progressBar")
