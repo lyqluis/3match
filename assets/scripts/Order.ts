@@ -10,6 +10,9 @@ import {
 	Vec3,
 } from "cc"
 import { OrdersController } from "./OrdersController"
+import { Config, getLevelConfig, State } from "./state"
+import { changeImageSize, loadImage, randomNum, setImageToNode } from "./utils"
+import { cuisineMap } from "./stateMap"
 const { ccclass, property } = _decorator
 
 // test
@@ -35,7 +38,7 @@ export class Order extends Component {
 	cuisines: Cuisine[] = null
 	time: number = null
 	data = {
-		cuisine: [],
+		cuisines: [],
 		time: 10,
 	}
 
@@ -54,7 +57,51 @@ export class Order extends Component {
 		this.node.destroy()
 	}
 
+	private generateOrderDate() {
+		// get current level's config's order list
+		const levelConfig = getLevelConfig(State.currentLevel ?? 1)
+		const cuisineList = levelConfig.orders
+		// get random cuisine count
+		const cuisineCount = randomNum(1, 2)
+		// get random cuisines with count
+		const randomCuisines = []
+		for (let i = 0; i < cuisineCount; i++) {
+			const cuisine = cuisineList[randomNum(0, cuisineList.length - 1)]
+			randomCuisines.push(cuisine)
+		}
+		// generate random waiting time
+		const waitingTime = randomCuisines.reduce(
+			(acc, val) => acc + randomNum(val.duration[0], val.duration[1]),
+			0
+		)
+		return {
+			cuisines: randomCuisines.map((c) => c.cuisine),
+			time: waitingTime,
+		}
+	}
+
+	// TODO
+	init(id?: number) {
+		this.data = this.generateOrderDate()
+		// set image
+		this.data.cuisines.map(async (c, i) => {
+			const cuisine = cuisineMap[c]
+			const node = this.node.getChildByName("cuisines-wrapper").children[i]
+			// set img & label
+			const imgNode = node.getChildByName("img")
+			await setImageToNode(imgNode, "cuisine", c)
+			changeImageSize(imgNode, { maxHeight: 85 })
+			const labelNode = node.getChildByName("name")
+			labelNode.getComponent(Label).string = cuisine.title
+		})
+		// set id
+		id && this.setNum(id)
+	}
+
 	start() {
+		console.log("order start")
+		// TODO init
+		// this.init()
 		this.timer = this.time = this.data.time // s
 		const progressBar = (this.progressBar = this.node
 			.getChildByName("progressBar")
@@ -63,6 +110,7 @@ export class Order extends Component {
 	}
 
 	update(deltaTime: number) {
+		return // todo
 		this.timer -= deltaTime
 		this.progressBar.progress = this.timer / this.time
 		if (this.timer <= 0) {
@@ -89,10 +137,7 @@ export class Order extends Component {
 			.call(() => {
 				this.removeOrder()
 				const controller = this.node.parent.getComponent(OrdersController)
-				controller.refreshOrders(() => {
-					// create a new order, this should be called after resfreshing the orders
-					controller.createOrder()
-				})
+				controller.refreshOrders()
 			})
 			.start()
 	}

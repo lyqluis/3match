@@ -6,6 +6,7 @@ import {
 	instantiate,
 	Node,
 	Prefab,
+	Sprite,
 	SpriteFrame,
 	UITransform,
 	Vec2,
@@ -15,6 +16,7 @@ import { Block } from "./Block"
 import { getLevelConfig, LevelConfigs, State } from "./state"
 import { BlockMap } from "./BlockMap"
 import { MatchController } from "./MatchController"
+import { loadDirImages } from "./utils"
 const { ccclass, property } = _decorator
 
 @ccclass("matchLayout")
@@ -29,6 +31,18 @@ export class MatchLayout extends Component {
 	cuisineImgs: SpriteFrame[] = []
 
 	touchingBlock: Block = null
+
+	async onLoad() {
+			// await this.loadResources()
+		// this.foodImgs = await loadDirImages("imgs/food")
+	}
+
+	private async loadResources() {
+		!this.foodImgs && (this.foodImgs = await loadDirImages("imgs/food"))
+		!this.toolImgs && (this.toolImgs = await loadDirImages("imgs/tool"))
+		!this.cuisineImgs &&
+			(this.cuisineImgs = await loadDirImages("imgs/cuisine"))
+	}
 
 	start() {
 		if (State.mode === 1) {
@@ -97,7 +111,7 @@ export class MatchLayout extends Component {
 	}
 
 	// 根据关卡数生成对应的 block
-	renderGame(level: number) {
+	async renderGame(level: number) {
 		this.removeAllBlocks()
 		// get level config
 		const levelConfig = getLevelConfig(level)

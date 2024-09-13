@@ -49,6 +49,12 @@ export class MatchController extends Component {
 		this.startGame()
 	}
 
+	// test
+	preLevel() {
+		State.currentLevel--
+		this.startGame()
+	}
+
 	// after block clicked, the block will be moved from layout area to march board area
 	// 1. copy the block, set origin block inactive
 	// 2. move the copy block to match board's position in controller area
@@ -79,7 +85,6 @@ export class MatchController extends Component {
 						// call food storage controller to create block's food
 						this.foodStorage.addFood(deletedBlock)
 					} else if (deletedBlock.data.type === "tool") {
-						// TODO
 						// add tool to the tools controller
 						this.activateCookingTool(deletedBlock.data)
 					}

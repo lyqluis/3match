@@ -3,6 +3,7 @@ import {
 	Color,
 	Component,
 	Input,
+	instantiate,
 	Node,
 	ProgressBar,
 	Sprite,
@@ -15,6 +16,7 @@ import { EventDispatcher } from "./EventDispatcher"
 import { Item } from "./Item"
 import { Notify } from "./Notification"
 import { loadImage, setParentInPosition } from "./utils"
+import { findCuisineById } from "./stateMap"
 const { ccclass, property } = _decorator
 
 @ccclass("CookingTool")
@@ -22,7 +24,8 @@ export class CookingTool extends Component {
 	shadow: Node = null
 	materials: Item[] = [] // 食材列表
 	slots: Node[] = [] // 存放食材的格子
-	tool = null
+	data = null
+	tool: Node = null
 	cookingTime: number = 5 // s
 	timer: number = 0
 	progressBarNode: Node = null
@@ -32,13 +35,12 @@ export class CookingTool extends Component {
 
 	startBtn: Node = null
 
-	start() {
+	protected onLoad(): void {
 		this.shadow = this.node.getChildByName("shadow")
 		this.progressBarNode = this.node.getChildByName("ProgressBar")
 		this.progressBar = this.progressBarNode.getComponent(ProgressBar)
 		this.startBtn = this.node.getChildByName("start-button")
 		this.slots = this.node.getChildByName("container").children
-		this.setActive(false)
 		this.progressBarNode.active = false
 		this.node.on(Input.EventType.TOUCH_END, this.onTouchEnd, this)
 		EventDispatcher.getTarget().on(
@@ -46,7 +48,10 @@ export class CookingTool extends Component {
 			this.updateSelected,
 			this
 		)
+		this.setActive(false)
 	}
+
+	start() {}
 
 	update(deltaTime: number) {
 		if (this.isWorking) {
@@ -54,15 +59,15 @@ export class CookingTool extends Component {
 		}
 	}
 
-	// TODO ?
 	async activate(data) {
-		this.tool = data
+		this.data = data
 		// set tool sprite frame
 		try {
 			const spriteFrame: any = await loadImage(
 				`imgs/${data.type}/${data.name}/spriteFrame`
 			)
-			const toolSpriteNode = this.node.getChildByPath("start-button/tool")
+			const toolSpriteNode = (this.tool =
+				this.node.getChildByPath("start-button/tool"))
 			toolSpriteNode.getComponent(Sprite).spriteFrame = spriteFrame
 			this.setActive(true)
 		} catch (err) {
@@ -85,6 +90,7 @@ export class CookingTool extends Component {
 	setActive(active: boolean) {
 		this.shadow.active = !active
 		const color = active ? new Color(255, 255, 255) : new Color(68, 68, 68)
+		if (this.tool) this.tool.getComponent(Sprite).color = color
 		this.materials.forEach((food) => {
 			food.node.getComponent(Sprite).color = color
 		})
@@ -128,8 +134,15 @@ export class CookingTool extends Component {
 		console.log("finish cooking")
 
 		// TODO: finish cooking
-		// delete foods
 		// create cuisine
+		const foods = this.materials.map((food) => food.data.name)
+		const cuisineId = this.data.name + foods.sort().join("")
+		const cuisineData = findCuisineById(cuisineId)
+		const cuisine = this.materials[0]
+		cuisine.init(cuisineData)
+		Notify(`${cuisine.data.title} 烹饪成功！`)
+		// delete foods
+		this.materials.forEach((food, i) => i > 0 && food.node.destroy())
 	}
 
 	onTouchEnd() {

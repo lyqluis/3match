@@ -10,6 +10,8 @@ import {
 	Vec3,
 } from "cc"
 import { Order } from "./Order"
+import { Notify } from "./Notification"
+import { Config } from "./state"
 const { ccclass, property } = _decorator
 
 @ccclass("OrdersController")
@@ -19,11 +21,18 @@ export class OrdersController extends Component {
 
 	orderCount = 2
 	orderId = 0
-	layout: Layout = null
+	layout: Layout = null // ?
 	orders = []
 
 	start() {
-		// this.layout = this.node.getComponent(Layout)
+		// todo auto
+		// this.scheduleOnce(this.startOrder, 20)
+	}
+
+	startOrder() {
+		Notify("客人要来咯")
+		this.createOrder()
+		this.scheduleOnce(this.createOrder, 10)
 	}
 
 	createOrder() {
@@ -42,12 +51,14 @@ export class OrdersController extends Component {
 		console.log("new xy", newX, newY)
 
 		this.orderId++
+		// instantiate order node
 		const orderNode = instantiate(this.preOrder)
 		orderNode.setParent(this.node)
 		this.node.addChild(orderNode)
 
 		const order = orderNode.getComponent(Order)
-		order.setNum(this.orderId)
+		// ? is necessary
+		order.init(this.orderId) // ?init random order by level config
 		this.orders.push(order)
 		// animate to show up
 		order.moveUpToShow(newX, newY)
@@ -74,5 +85,7 @@ export class OrdersController extends Component {
 				.start()
 			return { ...order.getBoundingBox(), x, y }
 		}, null)
+		// create new order, this should be called after resfreshing the orders
+		this.scheduleOnce(this.createOrder, Config.orderInterval)
 	}
 }

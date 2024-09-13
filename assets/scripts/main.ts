@@ -2,6 +2,7 @@ import { _decorator, Component, Node } from "cc"
 import { State } from "./state"
 import { EditorLayout } from "./editorLayout"
 import { MatchController } from "./MatchController"
+import { preloadDirImages } from "./utils"
 const { ccclass, property } = _decorator
 
 @ccclass("main")
@@ -11,6 +12,12 @@ export class Main extends Component {
 
 	@property({ type: MatchController })
 	matchController: MatchController = null
+
+	// protected onLoad() {
+	// 	preloadDirImages('imgs/food')
+	// 	preloadDirImages('imgs/tool')
+	// 	preloadDirImages('imgs/cuisine')
+	// }
 
 	start() {
 		// todo this.init_bg_sound()
@@ -43,5 +50,4 @@ export class Main extends Component {
 		}
 		this.start()
 	}
-
 }

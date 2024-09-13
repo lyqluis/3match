@@ -60,6 +60,7 @@ export class Block extends Component {
 		this.img = img
 		const node = this.node.getChildByName("item")
 		node.getComponent(Sprite).spriteFrame = img
+		// todo
 		// change image size
 		// node.getComponent(UITransform).setContentSize()
 	}

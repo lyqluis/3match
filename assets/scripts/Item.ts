@@ -27,13 +27,16 @@ export class Item extends Component {
 	origin: Item = null
 
 	start() {
+		this.node.getComponent(Sprite).spriteFrame = null
 		// this.node.on(Input.EventType.TOUCH_START, this.onTouchStart, this)
 		// this.node.on(Input.EventType.TOUCH_END, this.onTouchEnd, this)
-		// // this.node.on(Input.EventType.TOUCH_CANCEL, this.onTouchCancel, this)
+		// this.node.on(Input.EventType.TOUCH_CANCEL, this.onTouchCancel, this)
 	}
 
 	async init(data) {
 		this.data = data
+		this.count = 1
+		this.origin = null
 		await this.setImg(data.type, data.name)
 		this.hideCount()
 		this.changeSize()
@@ -50,12 +53,12 @@ export class Item extends Component {
 		}
 	}
 
-	changeSize() {
+	changeSize(max?: number) {
 		// find the bigger one in width or height
 		const uiTransform = this.node.getComponent(UITransform)
 		const { width, height } = uiTransform
 		const longer = Math.max(width, height)
-		const k = MAX / longer
+		const k = max ? max / longer : MAX / longer
 
 		// uiTransform.setContentSize(width * k, height * k)
 		uiTransform.width = width * k
