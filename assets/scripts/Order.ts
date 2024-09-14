@@ -1,18 +1,28 @@
 import {
 	_decorator,
+	Color,
 	Component,
+	Input,
 	Label,
 	Node,
 	ProgressBar,
 	Rect,
+	Sprite,
 	tween,
 	UITransform,
 	Vec3,
 } from "cc"
 import { OrdersController } from "./OrdersController"
 import { Config, getLevelConfig, State } from "./state"
-import { changeImageSize, loadImage, randomNum, setImageToNode } from "./utils"
+import {
+	changeImageSize,
+	loadImage,
+	randomNum,
+	setImageToNode,
+	setParentInPosition,
+} from "./utils"
 import { cuisineMap } from "./stateMap"
+import { Item } from "./Item"
 const { ccclass, property } = _decorator
 
 // test
@@ -32,14 +42,20 @@ export class Order extends Component {
 	private moveDistance = 500
 	private progressBar: ProgressBar = null
 	private timer: number = 0
+	private timerRunning: boolean = false
 
 	position = null
 	person = null
-	cuisines: Cuisine[] = null
+	cuisines: Cuisine[] = []
 	time: number = null
+	cuisineNodes: Node[] = []
 	data = {
-		cuisines: [],
+		cuisines: [], // ['riceball', 'riceball']
 		time: 10,
+	}
+
+	protected onLoad(): void {
+		this.node.on(Input.EventType.TOUCH_END, this.onTouchEnd, this)
 	}
 
 	setNum(n: number) {
@@ -97,6 +113,7 @@ export class Order extends Component {
 		this.data.cuisines.map(async (c, i) => {
 			const cuisine = cuisineMap[c]
 			const node = this.node.getChildByName("cuisines-wrapper").children[i]
+			this.cuisineNodes.push(node)
 			// set img & label
 			const imgNode = node.getChildByName("img")
 			await setImageToNode(imgNode, "cuisine", c)
@@ -110,7 +127,21 @@ export class Order extends Component {
 	}
 
 	start() {
-		// console.log("order start")
+		this.initProgressBar()
+	}
+
+	update(deltaTime: number) {
+		if (!this.timerRunning) return
+
+		this.timer -= deltaTime
+		this.progressBar.progress = this.timer / this.time
+		if (this.timer <= 0) {
+			this.timerRunning = false
+			this.scheduleOnce(() => this.moveDownToRemove(), 1)
+		}
+	}
+
+	private initProgressBar() {
 		this.timer = this.time = this.data.time // s
 		const progressBar = (this.progressBar = this.node
 			.getChildByName("progressBar")
@@ -118,13 +149,56 @@ export class Order extends Component {
 		progressBar.progress = 0
 	}
 
-	update(deltaTime: number) {
-		return // todo
-		this.timer -= deltaTime
-		this.progressBar.progress = this.timer / this.time
-		if (this.timer <= 0) {
-			this.scheduleOnce(this.moveDownToRemove, 1)
+	onTouchEnd() {
+		this.playScale()
+		const { currentTool } = State
+		if (currentTool) {
+			// match cuisine
+			const cuisine = currentTool.materials[0]
+			const matchedIndex = this.checkCuisine(cuisine)
+
+			if (matchedIndex > -1) {
+				this.data.cuisines.splice(matchedIndex, 1, null)
+				const orderCuisineNode = this.cuisineNodes[matchedIndex]
+				const orderCuisineImgNode = orderCuisineNode.getChildByName("img")
+
+				this.moveCuisineToOrder(cuisine.node, orderCuisineImgNode, () => {
+					orderCuisineImgNode.getComponent(Sprite).color = new Color(68, 68, 68)
+					cuisine.node.destroy()
+					currentTool.clearMaterials()
+
+					const finished = this.checkOrderFinished()
+					if (finished) {
+						// TODO: order finished
+						// stop timer
+						this.timerRunning = false
+						// todo: add coins
+						// move down to delete order
+						this.scheduleOnce(this.moveDownToRemove, 1)
+					}
+				})
+			}
 		}
+	}
+
+	moveCuisineToOrder(node: Node, target: Node, callback?) {
+		// trans traget's world position to node's local position
+		const position = target.getWorldPosition()
+		const targetLocalPosition = node.parent
+			.getComponent(UITransform)
+			.convertToNodeSpaceAR(position)
+		tween(node)
+			.to(0.3, { position: targetLocalPosition }, { easing: "smooth" })
+			.call(callback)
+			.start()
+	}
+
+	checkCuisine(cuisine: Item) {
+		return this.data.cuisines.findIndex((c) => c === cuisine.data.name)
+	}
+
+	checkOrderFinished() {
+		return this.data.cuisines.every((c) => c === null)
 	}
 
 	/**
@@ -135,7 +209,12 @@ export class Order extends Component {
 		this.node.setPosition(initPosition)
 
 		const position = new Vec3(x, y)
-		tween(this.node).to(0.5, { position }).start()
+		tween(this.node)
+			.to(0.5, { position })
+			.call(() => {
+				this.timerRunning = true
+			})
+			.start()
 	}
 
 	moveDownToRemove() {
@@ -148,6 +227,13 @@ export class Order extends Component {
 				const controller = this.node.parent.getComponent(OrdersController)
 				controller.refreshOrders()
 			})
+			.start()
+	}
+
+	playScale() {
+		tween(this.node)
+			.to(0.1, { scale: new Vec3(1.2, 1.2, 1.2) })
+			.to(0.1, { scale: new Vec3(1, 1, 1) })
 			.start()
 	}
 }
