@@ -5,6 +5,7 @@ import {
 	Input,
 	Label,
 	Node,
+	NodeEventType,
 	ProgressBar,
 	Rect,
 	Sprite,
@@ -53,6 +54,7 @@ export class Order extends Component {
 		cuisines: [], // ['riceball', 'riceball']
 		time: 10,
 	}
+	price: number = 0
 
 	protected onLoad(): void {
 		this.node.on(Input.EventType.TOUCH_END, this.onTouchEnd, this)
@@ -73,7 +75,6 @@ export class Order extends Component {
 		this.node.destroy()
 	}
 
-	// TODO: order's price data
 	private generateOrderDate() {
 		// get current level's config's order list
 		const levelConfig = getLevelConfig(State.currentLevel ?? 1)
@@ -105,13 +106,17 @@ export class Order extends Component {
 		await setImageToNode(node, "person", avatarName)
 		changeImageSize(node, { maxHeight: 85 })
 	}
+	private async setPrice(n: number = this.price) {
+		const node = this.node.getChildByPath("price/label")
+		node.getComponent(Label).string = n.toString()
+	}
 
 	init(id?: number) {
 		// set cuisin data
 		this.data = this.generateOrderDate()
 		// set cuisine image
 		this.data.cuisines.map(async (c, i) => {
-			const cuisine = cuisineMap[c]
+			const cuisineData = cuisineMap[c]
 			const node = this.node.getChildByName("cuisines-wrapper").children[i]
 			this.cuisineNodes.push(node)
 			// set img & label
@@ -119,7 +124,12 @@ export class Order extends Component {
 			await setImageToNode(imgNode, "cuisine", c)
 			changeImageSize(imgNode, { maxHeight: 85 })
 			const labelNode = node.getChildByName("name")
-			labelNode.getComponent(Label).string = cuisine.title
+			labelNode.getComponent(Label).string = cuisineData.title
+			// set pirce
+			this.price += cuisineData.price
+			if (i == this.data.cuisines.length - 1) {
+				this.setPrice()
+			}
 		})
 		this.setRandomAvatar()
 		// set id

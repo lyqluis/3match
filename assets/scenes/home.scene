@@ -1407,7 +1407,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -463.36699999999996,
+      "y": -463.3670000000001,
       "z": 0
     },
     "_lrot": {
@@ -2467,7 +2467,7 @@
     "_left": -5,
     "_right": -5,
     "_top": 0,
-    "_bottom": -51.73400000000004,
+    "_bottom": -51.734000000000094,
     "_horizontalCenter": 0,
     "_verticalCenter": 0,
     "_isAbsLeft": true,
