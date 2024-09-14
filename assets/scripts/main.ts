@@ -9,15 +9,8 @@ const { ccclass, property } = _decorator
 export class Main extends Component {
 	@property({ type: Node })
 	editorNode: Node = null
-
 	@property({ type: MatchController })
 	matchController: MatchController = null
-
-	// protected onLoad() {
-	// 	preloadDirImages('imgs/food')
-	// 	preloadDirImages('imgs/tool')
-	// 	preloadDirImages('imgs/cuisine')
-	// }
 
 	start() {
 		// todo this.init_bg_sound()
@@ -49,5 +42,10 @@ export class Main extends Component {
 			State.mode = 0
 		}
 		this.start()
+	}
+
+	nextLevel() {
+		State.currentLevel++
+		this.startGame()
 	}
 }

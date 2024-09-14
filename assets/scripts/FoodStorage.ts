@@ -119,7 +119,12 @@ export class FoodStorage extends Component {
 		const tool = State.currentTool
 		// move food to cooking	tool area
 		if (tool) {
-			tool.moveFoodFromStorage(this.touchingFood, this)
+			if (tool.materials[0].data.type === "cuisine") {
+				Notify("请先清空厨具")
+				console.error("trash cuisine first")
+			} else {
+				tool.moveFoodFromStorage(this.touchingFood, this)
+			}
 		} else {
 			Notify("请先选中一个烹饪工具")
 			console.error("choose a cooking tool first")

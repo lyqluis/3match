@@ -36,7 +36,6 @@ const OrderData = {
 
 @ccclass("Order")
 export class Order extends Component {
-	@property(Node)
 	// test
 	number: Node = null
 
@@ -179,28 +178,21 @@ export class Order extends Component {
 
 					const finished = this.checkOrderFinished()
 					if (finished) {
-						// TODO: order finished
+						// order finished
 						// stop timer
 						this.timerRunning = false
-						// todo: add coins
+						// add coins
+						const coinsNode = this.node.getChildByPath("price/coins")
+						const coinsPriceNode = this.node.getChildByPath("price/label")
+						const controller = this.node.parent.getComponent(OrdersController)
+						controller.moveMoneyToCoins(coinsNode)
+						controller.addMoneyToAccount(this.timer / this.time, this.price)
 						// move down to delete order
 						this.scheduleOnce(this.moveDownToRemove, 1)
 					}
 				})
 			}
 		}
-	}
-
-	moveCuisineToOrder(node: Node, target: Node, callback?) {
-		// trans traget's world position to node's local position
-		const position = target.getWorldPosition()
-		const targetLocalPosition = node.parent
-			.getComponent(UITransform)
-			.convertToNodeSpaceAR(position)
-		tween(node)
-			.to(0.3, { position: targetLocalPosition }, { easing: "smooth" })
-			.call(callback)
-			.start()
 	}
 
 	checkCuisine(cuisine: Item) {
@@ -244,6 +236,18 @@ export class Order extends Component {
 		tween(this.node)
 			.to(0.1, { scale: new Vec3(1.2, 1.2, 1.2) })
 			.to(0.1, { scale: new Vec3(1, 1, 1) })
+			.start()
+	}
+
+	moveCuisineToOrder(node: Node, target: Node, callback?) {
+		// trans traget's world position to node's local position
+		const position = target.getWorldPosition()
+		const targetLocalPosition = node.parent
+			.getComponent(UITransform)
+			.convertToNodeSpaceAR(position)
+		tween(node)
+			.to(0.3, { position: targetLocalPosition }, { easing: "smooth" })
+			.call(callback)
 			.start()
 	}
 }

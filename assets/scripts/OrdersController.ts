@@ -12,12 +12,16 @@ import {
 import { Order } from "./Order"
 import { Notify } from "./Notification"
 import { Config } from "./state"
+import { setParentInPosition } from "./utils"
+import { Price } from "./Price"
 const { ccclass, property } = _decorator
 
 @ccclass("OrdersController")
 export class OrdersController extends Component {
 	@property(Prefab)
 	preOrder: Prefab = null
+	@property(Node)
+	priceNode: Node = null
 
 	orderCount = 2
 	orderId = 0
@@ -26,7 +30,7 @@ export class OrdersController extends Component {
 
 	start() {
 		// todo auto
-		// this.scheduleOnce(this.startOrder, 20)
+		this.scheduleOnce(this.startOrder, 20)
 	}
 
 	startOrder() {
@@ -72,6 +76,21 @@ export class OrdersController extends Component {
 		this.orders = []
 	}
 
+	// ? TODO
+	addMoneyToAccount(k: number, originPrice: number) {
+		// let money =
+		// 	k >= 0.5
+		// 		? originPrice
+		// 		: k >= 0.2
+		// 		? 0.5 * originPrice
+		// 		: k > 0
+		// 		? 0.3 * originPrice
+		// 		: 0
+		const money = originPrice
+		const price = this.priceNode.getComponent(Price)
+		price.addMoney(money)
+	}
+
 	// reset position of orders after some order node removed
 	refreshOrders(callback?) {
 		this.orders.reduce((lastOrderRect, order) => {
@@ -88,5 +107,16 @@ export class OrdersController extends Component {
 		}, null)
 		// create new order, this should be called after resfreshing the orders
 		this.scheduleOnce(() => this.createOrder(), Config.orderInterval)
+	}
+
+	moveMoneyToCoins(money: Node, callback?) {
+		setParentInPosition(money, this.priceNode)
+		tween(money)
+			.to(0.3, { position: new Vec3(0, 0) }, { easing: "smooth" })
+			.call(() => {
+				money.destroy()
+				callback && callback()
+			})
+			.start()
 	}
 }

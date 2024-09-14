@@ -32,7 +32,7 @@ export class MatchController extends Component {
 
 	UITransform: UITransform = null
 
-	start() {
+	protected onLoad() {
 		this.UITransform = this.node.getComponent(UITransform)
 	}
 

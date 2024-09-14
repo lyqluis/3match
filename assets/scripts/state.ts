@@ -8,7 +8,7 @@ export const Config = {
 	col: 7, // num in col
 	editorMode: 1,
 	blockBoundingOffset: 10, // use in intersection check of block's inner bounding box
-	orderInterval: 3	// create a new order after 5s of removing old one
+	orderInterval: 3, // create a new order after 5s of removing old one
 }
 
 export const State = {
@@ -59,6 +59,8 @@ export const LevelConfigs = [
 		level: 2, // level name
 		limit: 4, // 限制的花色数，including `include`
 		includes: ["pot", "rice"], // include specific imgs & count
+		orders: [{ cuisine: "riceball", duration: [10, 15] }],
+		goal: 15,
 		value: [
 			{ x: -300, y: 298 },
 			{ x: -300, y: 248 },
