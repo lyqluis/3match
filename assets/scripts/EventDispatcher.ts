@@ -56,6 +56,7 @@ export class EventDispatcher {
 	public static UPDATE_BLOCK_COUNT = "UPDATE_BLOCK_COUNT"
 	public static SHOW_NOTIFICATION = "SHOW_NOTIFICATION"
 	public static UPDATE_COOKING_TOOL = "UPDATE_COOKING_TOOL"
+	public static PASS_LEVEL = 'PASS_LEVEL'
 
 	static getTarget() {
 		if (!EventDispatcher.data) {

@@ -2,7 +2,11 @@ import { _decorator, Component, Node } from "cc"
 import { State } from "./state"
 import { EditorLayout } from "./editorLayout"
 import { MatchController } from "./MatchController"
-import { preloadDirImages } from "./utils"
+import { Price } from "./Price"
+import { FoodStorage } from "./FoodStorage"
+import { OrdersController } from "./OrdersController"
+import { EventDispatcher } from "./EventDispatcher"
+import { Notify } from "./Notification"
 const { ccclass, property } = _decorator
 
 @ccclass("main")
@@ -11,6 +15,20 @@ export class Main extends Component {
 	editorNode: Node = null
 	@property({ type: MatchController })
 	matchController: MatchController = null
+	@property({ type: Price })
+	price: Price = null
+	@property({ type: FoodStorage })
+	foodStorage: FoodStorage = null
+	@property({ type: OrdersController })
+	orderController: OrdersController = null
+
+	protected onLoad(): void {
+		EventDispatcher.getTarget().on(
+			EventDispatcher.PASS_LEVEL,
+			this.nextLevel,
+			this
+		)
+	}
 
 	start() {
 		// todo this.init_bg_sound()
@@ -29,9 +47,18 @@ export class Main extends Component {
 		}
 	}
 
+	// TODO
 	startGame() {
-		// get matchController's component
+		Notify(`第 ${State.currentLevel} 关`)
 		this.matchController.startGame()
+		this.foodStorage.reset()
+		this.orderController.reset()
+		this.price.init()
+	}
+
+	nextLevel() {
+		State.currentLevel++
+		this.startGame()
 	}
 
 	// test
@@ -44,8 +71,9 @@ export class Main extends Component {
 		this.start()
 	}
 
-	nextLevel() {
-		State.currentLevel++
+	// test
+	preLevel() {
+		State.currentLevel--
 		this.startGame()
 	}
 }

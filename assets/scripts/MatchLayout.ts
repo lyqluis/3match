@@ -13,7 +13,7 @@ import {
 	Vec3,
 } from "cc"
 import { Block } from "./Block"
-import { getLevelConfig, LevelConfigs, State } from "./state"
+import { getLevelConfig, State } from "./state"
 import { BlockMap } from "./BlockMap"
 import { MatchController } from "./MatchController"
 import { loadDirImages } from "./utils"
@@ -33,7 +33,7 @@ export class MatchLayout extends Component {
 	touchingBlock: Block = null
 
 	async onLoad() {
-			// await this.loadResources()
+		// await this.loadResources()
 		// this.foodImgs = await loadDirImages("imgs/food")
 	}
 

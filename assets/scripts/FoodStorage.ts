@@ -33,7 +33,11 @@ export class FoodStorage extends Component {
 		this.node.on(Input.EventType.TOUCH_CANCEL, this.onTouchCancel, this)
 	}
 
-	update(deltaTime: number) {}
+	reset() {
+		this.foodList = []
+		this.touchingFood = null
+		this.slots.forEach((slot) => slot.destroyAllChildren())
+	}
 
 	createFood(block: Block): Item {
 		// instantiate food node
@@ -119,7 +123,7 @@ export class FoodStorage extends Component {
 		const tool = State.currentTool
 		// move food to cooking	tool area
 		if (tool) {
-			if (tool.materials[0].data.type === "cuisine") {
+			if (tool.materials[0]?.data?.type === "cuisine") {
 				Notify("请先清空厨具")
 				console.error("trash cuisine first")
 			} else {

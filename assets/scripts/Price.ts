@@ -1,5 +1,7 @@
 import { _decorator, Component, Label, Node } from "cc"
-import { LevelConfigs, State } from "./state"
+import { getLevelConfig, State } from "./state"
+import { EventDispatcher } from "./EventDispatcher"
+import { Notify } from "./Notification"
 const { ccclass, property } = _decorator
 
 @ccclass("Price")
@@ -15,7 +17,7 @@ export class Price extends Component {
 
 	init() {
 		this.money = 0
-		const config = LevelConfigs[State.currentLevel ?? 1]
+		const config = getLevelConfig(State.currentLevel)
 		const { goal } = config
 		this.goal = goal
 		this.updateMoneyLabel()
@@ -26,8 +28,13 @@ export class Price extends Component {
 		this.money += n
 		this.updateMoneyLabel()
 		if (this.money >= this.goal) {
-      // TODO: pass level
-			// State.passLevel()
+			// pass level
+			this.scheduleOnce(() => {
+				Notify("恭喜过关")
+				this.scheduleOnce(() => {
+					EventDispatcher.getTarget().emit(EventDispatcher.PASS_LEVEL)
+				}, 2)
+			}, 2)
 		}
 	}
 

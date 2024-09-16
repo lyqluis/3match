@@ -41,18 +41,7 @@ export class MatchController extends Component {
 		this.matchLayout.removeAllBlocks()
 		// this.matchHolding.removeAllBlocks()
 		this.matchBoard.clearAll()
-		this.matchLayout.renderGame(State.currentLevel || 1)
-	}
-
-	nextLevel() {
-		State.currentLevel++
-		this.startGame()
-	}
-
-	// test
-	preLevel() {
-		State.currentLevel--
-		this.startGame()
+		this.matchLayout.renderGame(State.currentLevel ?? 1)
 	}
 
 	// after block clicked, the block will be moved from layout area to march board area
@@ -77,10 +66,7 @@ export class MatchController extends Component {
 				// remove matched 3 blocks
 				const deletedBlock = this.matchBoard.removeMatchedBlocks()
 				if (deletedBlock) {
-					// todo
-					// play sound
-					// if level compelted, show next level
-					// this.nextLevel()
+					// todo play sound
 					if (deletedBlock.data.type === "food") {
 						// call food storage controller to create block's food
 						this.foodStorage.addFood(deletedBlock)

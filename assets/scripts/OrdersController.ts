@@ -29,8 +29,7 @@ export class OrdersController extends Component {
 	orders = []
 
 	start() {
-		// todo auto
-		this.scheduleOnce(this.startOrder, 20)
+		this.scheduleOnce(this.startOrder, 15)
 	}
 
 	startOrder() {
@@ -40,7 +39,6 @@ export class OrdersController extends Component {
 	}
 
 	createOrder() {
-		this.scheduleOnce(() => console.log("tst schedule"), 5)
 		if (this.orders.length >= 2) return // max 2 orders
 
 		const lastOrder = this.orders[this.orders.length - 1]
@@ -53,8 +51,7 @@ export class OrdersController extends Component {
 			newX = lastRect.x + lastRect.width + spacingX
 			newY = lastRect.y
 		}
-		console.log("new xy", newX, newY)
-
+		// console.log("new xy", newX, newY)
 		this.orderId++
 		// instantiate order node
 		const orderNode = instantiate(this.preOrder)
@@ -62,8 +59,8 @@ export class OrdersController extends Component {
 		this.node.addChild(orderNode)
 
 		const order = orderNode.getComponent(Order)
-		// ? is necessary
-		order.init(this.orderId) // ?init random order by level config
+
+		order.init(this.orderId) // init random order by level config
 		this.orders.push(order)
 		// animate to show up
 		order.moveUpToShow(newX, newY)
@@ -74,6 +71,12 @@ export class OrdersController extends Component {
 			order.node.destroy()
 		})
 		this.orders = []
+	}
+
+	reset() {
+		this.unscheduleAllCallbacks()
+		this.clearOrders()
+		this.scheduleOnce(this.startOrder, 15)
 	}
 
 	// ? TODO
@@ -91,6 +94,9 @@ export class OrdersController extends Component {
 		price.addMoney(money)
 	}
 
+	/**
+	 * animation
+	 */
 	// reset position of orders after some order node removed
 	refreshOrders(callback?) {
 		this.orders.reduce((lastOrderRect, order) => {
