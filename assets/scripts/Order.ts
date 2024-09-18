@@ -24,6 +24,7 @@ import {
 } from "./utils"
 import { cuisineMap } from "./stateMap"
 import { Item } from "./Item"
+import { Notify } from "./Notification"
 const { ccclass, property } = _decorator
 
 // test
@@ -164,6 +165,13 @@ export class Order extends Component {
 		if (currentTool) {
 			// match cuisine
 			const cuisine = currentTool.materials[0]
+
+			// if last click occurs error, click event will disappear
+			if (!cuisine) {
+				Notify("没有料理可以提供")
+				return
+			}
+			
 			const matchedIndex = this.checkCuisine(cuisine)
 
 			if (matchedIndex > -1) {
