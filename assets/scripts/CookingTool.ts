@@ -26,7 +26,7 @@ export class CookingTool extends Component {
 	slots: Node[] = [] // 存放食材的格子
 	data = null
 	tool: Node = null
-	cookingTime: number = 5 // s
+	cookingTime: number = 0 // s
 	timer: number = 0
 	progressBarNode: Node = null
 	progressBar: ProgressBar = null
@@ -116,6 +116,13 @@ export class CookingTool extends Component {
 		}
 		if (this.isWorking) return
 
+		// set cooking time
+		const foods = this.materials.map((food) => food.data.name)
+		const cuisineId = this.data.name + foods.sort().join("")
+		const cuisineData = findCuisineById(cuisineId)
+		this.cookingTime = cuisineData.duration
+		console.log("cooking: ", cuisineData.name, this.cookingTime)
+
 		// button animation
 		this.buttonScale(() => {
 			this.resetTimer()
@@ -138,7 +145,6 @@ export class CookingTool extends Component {
 
 		console.log("finish cooking")
 
-		// TODO: finish cooking
 		// create cuisine
 		const foods = this.materials.map((food) => food.data.name)
 		const cuisineId = this.data.name + foods.sort().join("")
@@ -155,6 +161,8 @@ export class CookingTool extends Component {
 			i > 0 && food.node.destroy()
 			return i === 0
 		})
+		// reset
+		this.cookingTime = 0
 	}
 
 	onTouchEnd() {

@@ -7,9 +7,10 @@ import { FoodStorage } from "./FoodStorage"
 import { OrdersController } from "./OrdersController"
 import { EventDispatcher } from "./EventDispatcher"
 import { Notify } from "./Notification"
+import { CompleteLevelPageAction } from "./CompleteLevelPageAction"
 const { ccclass, property } = _decorator
 
-@ccclass("main")
+@ccclass("Main")
 export class Main extends Component {
 	@property({ type: Node })
 	editorNode: Node = null
@@ -21,6 +22,8 @@ export class Main extends Component {
 	foodStorage: FoodStorage = null
 	@property({ type: OrdersController })
 	orderController: OrdersController = null
+	@property({ type: CompleteLevelPageAction })
+	completeLevelPage: CompleteLevelPageAction = null
 
 	protected onLoad(): void {
 		EventDispatcher.getTarget().on(
@@ -47,7 +50,6 @@ export class Main extends Component {
 		}
 	}
 
-	// TODO
 	startGame() {
 		Notify(`第 ${State.currentLevel} 关`)
 		this.matchController.startGame()
@@ -59,6 +61,13 @@ export class Main extends Component {
 	nextLevel() {
 		State.currentLevel++
 		this.startGame()
+	}
+
+	// use in complete level page
+	clickToNextLevel() {
+		this.completeLevelPage.clickBtn(() => {
+			this.nextLevel()
+		})
 	}
 
 	// test

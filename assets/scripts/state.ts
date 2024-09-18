@@ -8,7 +8,7 @@ export const Config = {
 	col: 7, // num in col
 	editorMode: 1,
 	blockBoundingOffset: 10, // use in intersection check of block's inner bounding box
-	orderInterval: 3, // create a new order after 5s of removing old one
+	orderInterval: 2, // create a new order after 5s of removing old one
 }
 
 export const State = {

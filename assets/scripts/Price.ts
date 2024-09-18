@@ -6,6 +6,9 @@ const { ccclass, property } = _decorator
 
 @ccclass("Price")
 export class Price extends Component {
+	@property(Node)
+	completeLevelPage: Node = null
+
 	money: number = 0
 	goal: number = 0
 
@@ -30,11 +33,13 @@ export class Price extends Component {
 		if (this.money >= this.goal) {
 			// pass level
 			this.scheduleOnce(() => {
-				Notify("恭喜过关")
-				this.scheduleOnce(() => {
-					EventDispatcher.getTarget().emit(EventDispatcher.PASS_LEVEL)
-				}, 2)
-			}, 2)
+				// TODO: complete level page
+				this.completeLevelPage.active = true
+				// this.scheduleOnce(() => {
+				// 	this.completeLevelPage.active = false
+				// 	EventDispatcher.getTarget().emit(EventDispatcher.PASS_LEVEL)
+				// }, 3)
+			}, 1)
 		}
 	}
 

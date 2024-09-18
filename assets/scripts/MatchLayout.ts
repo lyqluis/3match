@@ -19,7 +19,7 @@ import { MatchController } from "./MatchController"
 import { loadDirImages } from "./utils"
 const { ccclass, property } = _decorator
 
-@ccclass("matchLayout")
+@ccclass("MatchLayout")
 export class MatchLayout extends Component {
 	@property({ type: Prefab })
 	preBlock: Prefab = null
