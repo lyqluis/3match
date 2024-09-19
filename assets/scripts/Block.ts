@@ -13,6 +13,7 @@ import {
 } from "cc"
 import { Config } from "./state"
 import { BlockMap } from "./BlockMap"
+import { changeImageSize } from "./utils"
 const { ccclass, property } = _decorator
 
 @ccclass("Block")
@@ -60,9 +61,8 @@ export class Block extends Component {
 		this.img = img
 		const node = this.node.getChildByName("item")
 		node.getComponent(Sprite).spriteFrame = img
-		// todo
 		// change image size
-		// node.getComponent(UITransform).setContentSize()
+		changeImageSize(node, { max: 75 })
 	}
 
 	init(img: SpriteFrame, imgIndex: number, needAnimation?: boolean) {
