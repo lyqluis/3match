@@ -12,8 +12,9 @@
   - [x] import & export data
   - [ ] level config
 - [x] Item / Food
-  - [ ] optimization: delete default img when init
+  - [x] optimization: delete default img when init
 - [x] Order
+  - [x] adaptive width based on cuisine number of order
 - [x] when Cooking tool selected, select Order to match cuisine
 - [x] Cooking Tool
   - [x] add cooking tool

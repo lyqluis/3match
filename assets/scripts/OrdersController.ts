@@ -4,6 +4,7 @@ import {
 	instantiate,
 	Label,
 	Layout,
+	math,
 	Node,
 	Prefab,
 	tween,
@@ -26,7 +27,7 @@ export class OrdersController extends Component {
 	orderCount = 2
 	orderId = 0
 	layout: Layout = null // ?
-	orders = []
+	orders: Order[] = []
 
 	start() {
 		if (State.mode === 1) {
@@ -49,7 +50,7 @@ export class OrdersController extends Component {
 		let newY = 0
 		if (lastOrder) {
 			const lastRect = lastOrder.getBoundingBox()
-			console.log("last order rect", lastRect)
+			// console.log("last order rect", lastRect)
 			newX = lastRect.x + lastRect.width + spacingX
 			newY = lastRect.y
 		}
@@ -61,8 +62,8 @@ export class OrdersController extends Component {
 		this.node.addChild(orderNode)
 
 		const order = orderNode.getComponent(Order)
-
-		order.init(this.orderId) // init random order by level config
+		const cuisineCount = !lastOrder ? 1 : lastOrder.cuisineCount > 1 ? 1 : 2 // 2 cuisine or 1 cuisin
+		order.init(cuisineCount, this.orderId) // init random order by level config
 		this.orders.push(order)
 		// animate to show up
 		order.moveUpToShow(newX, newY)
@@ -101,7 +102,7 @@ export class OrdersController extends Component {
 	 */
 	// reset position of orders after some order node removed
 	refreshOrders(callback?) {
-		this.orders.reduce((lastOrderRect, order) => {
+		this.orders.reduce((lastOrderRect: math.Rect, order) => {
 			const x = lastOrderRect ? lastOrderRect.x + lastOrderRect.width + 20 : 0
 			const y = lastOrderRect ? lastOrderRect.y : 0
 			// order.setPosition({ x, y })

@@ -47,7 +47,8 @@ export class Order extends Component {
 
 	position = null
 	person = null
-	cuisines: Cuisine[] = []
+	// cuisines: Cuisine[] = []
+	cuisineCount: number = null
 	time: number = null
 	cuisineNodes: Node[] = []
 	data = {
@@ -75,12 +76,12 @@ export class Order extends Component {
 		this.node.destroy()
 	}
 
-	private generateOrderDate() {
+	private generateOrderData(cuisineCount?: number) {
 		// get current level's config's order list
 		const levelConfig = getLevelConfig(State.currentLevel ?? 1)
 		const cuisineList = levelConfig.orders
-		// get random cuisine count
-		const cuisineCount = randomNum(1, 2)
+		// --get random cuisine count
+		// --const cuisineCount = randomNum(1, 2)
 		// get random cuisines with count
 		const randomCuisines = []
 		for (let i = 0; i < cuisineCount; i++) {
@@ -111,9 +112,10 @@ export class Order extends Component {
 		node.getComponent(Label).string = n.toString()
 	}
 
-	init(id?: number) {
+	init(cuisineCount: number = 1, id?: number) {
 		// set cuisin data
-		this.data = this.generateOrderDate()
+		this.data = this.generateOrderData(cuisineCount)
+		this.cuisineCount = cuisineCount
 		// set cuisine image
 		this.data.cuisines.map(async (c, i) => {
 			const cuisineData = cuisineMap[c]
@@ -134,10 +136,13 @@ export class Order extends Component {
 		this.setRandomAvatar()
 		// set id
 		id && this.setNum(id)
+		// TODO: set size
+		this.initOrderSize()
+		this.initProgressBar()
 	}
 
 	start() {
-		this.initProgressBar()
+		console.log("order start")
 	}
 
 	update(deltaTime: number) {
@@ -152,11 +157,28 @@ export class Order extends Component {
 	}
 
 	private initProgressBar() {
+		console.log("init progress bar")
+
 		this.timer = this.time = this.data.time // s
 		const progressBar = (this.progressBar = this.node
 			.getChildByName("progressBar")
 			.getComponent(ProgressBar))
+		progressBar.totalLength = this.node.getComponent(UITransform).width
 		progressBar.progress = 0
+	}
+
+	// TODO
+	private initOrderSize() {
+		if (this.cuisineCount < 2) {
+			// remove extra cuisine node
+			const extraNode = this.node.getChildByName("cuisines-wrapper").children[1]
+			const extraWidth = extraNode
+				.getComponent(UITransform)
+				.getBoundingBox().width
+			extraNode.destroy()
+			const uiTransform = this.node.getComponent(UITransform)
+			uiTransform.width = uiTransform.width - extraWidth
+		}
 	}
 
 	onTouchEnd() {
@@ -171,7 +193,7 @@ export class Order extends Component {
 				Notify("没有料理可以提供")
 				return
 			}
-			
+
 			const matchedIndex = this.checkCuisine(cuisine)
 
 			if (matchedIndex > -1) {

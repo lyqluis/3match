@@ -95,3 +95,4 @@ export const changeImageSize = (
 	// uiTransform.width = width * k
 	// uiTransform.height = height * k
 }
+export const formateNumber = (n: number) => (n >= 1000 ? n / 1000 + "k" : n)
