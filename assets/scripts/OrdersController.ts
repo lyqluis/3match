@@ -11,7 +11,7 @@ import {
 } from "cc"
 import { Order } from "./Order"
 import { Notify } from "./Notification"
-import { Config } from "./state"
+import { Config, State } from "./state"
 import { setParentInPosition } from "./utils"
 import { Price } from "./Price"
 const { ccclass, property } = _decorator
@@ -29,7 +29,9 @@ export class OrdersController extends Component {
 	orders = []
 
 	start() {
-		this.scheduleOnce(this.startOrder, 15)
+		if (State.mode === 1) {
+			this.scheduleOnce(this.startOrder, 15)
+		}
 	}
 
 	startOrder() {

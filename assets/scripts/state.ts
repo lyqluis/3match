@@ -1,4 +1,4 @@
-import { _decorator, Component, Node } from "cc"
+import { _decorator } from "cc"
 const { ccclass, property } = _decorator
 
 export class gState {}
@@ -6,6 +6,8 @@ export class gState {}
 export const Config = {
 	row: 7, // num in row
 	col: 7, // num in col
+	blockWidth: 100,
+	blockHeight: 110,
 	editorMode: 1,
 	blockBoundingOffset: 10, // use in intersection check of block's inner bounding box
 	orderInterval: 2, // create a new order after 5s of removing old one

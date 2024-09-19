@@ -25,6 +25,23 @@ export class EditorLayout extends Component {
 
 	// current grid while generating blocks in case duplicate blocks on the same grid
 	currentGrid: Node = null
+	width: number = null
+	height: number = null
+	blockWidth: number = null
+	blockHeight: number = null
+
+	protected onLoad(): void {
+		this.blockWidth = Config.blockWidth
+		this.blockHeight = Config.blockHeight
+		// set same world position with match lyaout node
+		const position = this.matchLayout.node.getWorldPosition()
+		this.node.setWorldPosition(position)
+		// set same size with match layout node
+		const { width, height } = this.matchLayout.node.getComponent(UITransform)
+		this.node.getComponent(UITransform).setContentSize(width, height)
+		this.width = width
+		this.height = height
+	}
 
 	start() {}
 
@@ -37,23 +54,37 @@ export class EditorLayout extends Component {
 	}
 
 	private initGrid() {
-		// this.node.removeAllChildren()
 		this.node.destroyAllChildren()
+
+		// auto calculate row, col number, offsetX, offsetY instead of config
+		const offset = 5
+		const rowGridN =
+			Math.floor((this.width - offset * 2) / (this.blockWidth / 2)) - 1
+		const colGridN =
+			Math.floor((this.height - offset * 2) / (this.blockHeight / 2)) - 1
+		const offsetX = (this.width - (rowGridN + 1) * (this.blockWidth / 2)) / 2
+		const offsetY = (this.height - (colGridN + 1) * (this.blockHeight / 2)) / 2
+
+		const initX = (this.width / 2) * -1 + offsetX
+		const initY = this.height / 2 - offsetY
+
 		console.log(
 			"init grid",
-			this.node.getComponent(UITransform).width,
-			this.node.getComponent(UITransform).height
+			this.width,
+			this.height,
+			rowGridN,
+			colGridN,
+			initX,
+			initY,
+			offsetX,
+			offsetY
 		)
-		const offsetX = 5
-		const initX = (this.node.getComponent(UITransform).width / 2) * -1 + offsetX
-		const initY = this.node.getComponent(UITransform).height / 2
-		const rowN = Config.row * 2 - 1
-		const colN = Config.col * 2 - 1
-		for (let i = 0; i < rowN; i++) {
+
+		for (let i = 0; i < rowGridN; i++) {
 			// get prefab block's width / 2 and height / 2
-			const x = initX + 50 * (i + 1)
-			for (let j = 0; j < colN; j++) {
-				const y = initY + 50 * (j + 1) * -1
+			const x = initX + (this.blockWidth / 2) * (i + 1)
+			for (let j = 0; j < colGridN; j++) {
+				const y = initY + (this.blockHeight / 2) * (j + 1) * -1
 				this.addGrid(x, y)
 			}
 		}
