@@ -57,6 +57,7 @@ export class EventDispatcher {
 	public static SHOW_NOTIFICATION = "SHOW_NOTIFICATION"
 	public static UPDATE_COOKING_TOOL = "UPDATE_COOKING_TOOL"
 	public static PASS_LEVEL = 'PASS_LEVEL'
+	public static UPDATE_LEVEL = 'UPDATE_LEVEL'
 
 	static getTarget() {
 		if (!EventDispatcher.data) {

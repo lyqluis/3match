@@ -33,12 +33,8 @@ export class Price extends Component {
 		if (this.money >= this.goal) {
 			// pass level
 			this.scheduleOnce(() => {
-				// TODO: complete level page
+				// open complete level page
 				this.completeLevelPage.active = true
-				// this.scheduleOnce(() => {
-				// 	this.completeLevelPage.active = false
-				// 	EventDispatcher.getTarget().emit(EventDispatcher.PASS_LEVEL)
-				// }, 3)
 			}, 1)
 		}
 	}

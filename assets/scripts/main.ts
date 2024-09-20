@@ -61,6 +61,10 @@ export class Main extends Component {
 	nextLevel() {
 		State.currentLevel++
 		this.startGame()
+		EventDispatcher.getTarget().emit(
+			EventDispatcher.UPDATE_LEVEL,
+			State.currentLevel
+		)
 	}
 
 	// use in complete level page
@@ -84,5 +88,9 @@ export class Main extends Component {
 	preLevel() {
 		State.currentLevel--
 		this.startGame()
+		EventDispatcher.getTarget().emit(
+			EventDispatcher.UPDATE_LEVEL,
+			State.currentLevel
+		)
 	}
 }
