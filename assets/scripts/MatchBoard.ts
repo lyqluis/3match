@@ -9,6 +9,7 @@ import {
 	Vec3,
 } from "cc"
 import { Block } from "./Block"
+import { setParentInPosition } from "./utils"
 const { ccclass, property } = _decorator
 
 @ccclass("MatchBoard")
@@ -54,7 +55,7 @@ export class MatchBoard extends Component {
 		if (!inserted) newBlockList.push(block)
 
 		this.blockList = newBlockList
-		this.moveToResetOrder() // animate old blocks to order
+		this.moveToResetOrder() // animate old blocks to new order, set slot local position in block
 
 		// slot's world position
 		return this.node
@@ -97,6 +98,13 @@ export class MatchBoard extends Component {
 		this.blockList = []
 	}
 
+	getHoldingBlocks(n: number = 3): Block[] {
+		if (!this.blockList.length) return
+		const blockList = this.blockList
+		this.blockList = blockList.slice(n)
+		return blockList.slice(0, n)
+	}
+
 	/**
 	 * animation
 	 */
@@ -110,5 +118,20 @@ export class MatchBoard extends Component {
 				tween(block.node).to(0.1, { position: block.getPosition() }).start()
 			}
 		})
+	}
+
+	moveToHoldingArea(blockNode: Node, holdingSlot: Node) {
+		// get slot local positionin in this node
+		const holdingSlotPosition = holdingSlot.getWorldPosition()
+		const slotLocalPostionInBoard = this.node
+			.getComponent(UITransform)
+			.convertToNodeSpaceAR(holdingSlotPosition)
+
+		tween(blockNode)
+			.to(0.3, { position: slotLocalPostionInBoard }, { easing: "smooth" })
+			.call(() => {
+				setParentInPosition(blockNode, holdingSlot)
+			})
+			.start()
 	}
 }

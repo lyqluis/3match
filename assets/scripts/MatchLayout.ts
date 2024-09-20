@@ -32,24 +32,10 @@ export class MatchLayout extends Component {
 
 	touchingBlock: Block = null
 
-	async onLoad() {
-		// await this.loadResources()
-		// this.foodImgs = await loadDirImages("imgs/food")
-	}
-
-	private async loadResources() {
-		!this.foodImgs && (this.foodImgs = await loadDirImages("imgs/food"))
-		!this.toolImgs && (this.toolImgs = await loadDirImages("imgs/tool"))
-		!this.cuisineImgs &&
-			(this.cuisineImgs = await loadDirImages("imgs/cuisine"))
-	}
-
-	start() {
-		if (State.mode === 1) {
-			this.node.on(Input.EventType.TOUCH_START, this.onTouchStart, this)
-			this.node.on(Input.EventType.TOUCH_END, this.onTouchEnd, this)
-			this.node.on(Input.EventType.TOUCH_CANCEL, this.onTouchCancel, this)
-		}
+	protected onLoad() {
+		this.node.on(Input.EventType.TOUCH_START, this.onTouchStart, this)
+		this.node.on(Input.EventType.TOUCH_END, this.onTouchEnd, this)
+		this.node.on(Input.EventType.TOUCH_CANCEL, this.onTouchCancel, this)
 	}
 
 	addBlockByWorldPosition(position: Vec3): Block {
@@ -225,7 +211,7 @@ export class MatchLayout extends Component {
 		return null
 	}
 
-	onTouchStart(e: EventTouch) {
+	private onTouchStart(e: EventTouch) {
 		const touch = e.getUILocation()
 		const block = (this.touchingBlock = this.getTouchBlock(
 			new Vec3(touch.x, touch.y),
@@ -236,7 +222,7 @@ export class MatchLayout extends Component {
 			block.playScale(true)
 		}
 	}
-	onTouchEnd(e: EventTouch) {
+	private onTouchEnd(e: EventTouch) {
 		console.log("on touch end")
 		if (!this.touchingBlock) return
 		this.touchingBlock.playScale()
@@ -245,7 +231,7 @@ export class MatchLayout extends Component {
 			.moveBlockToMatchBoardArea(this.touchingBlock, this.preBlock)
 		this.touchingBlock = null
 	}
-	onTouchCancel(e: EventTouch) {
+	private onTouchCancel(e: EventTouch) {
 		console.log("on touch cancel")
 		if (this.touchingBlock) {
 			this.touchingBlock.playScale()

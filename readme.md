@@ -22,6 +22,7 @@
   - [x] select cooking tool
   - [x] finish cooking
   - [x] bug: can be selected when inactive
+  - [] bug: can be clicked to cook without materials
   - [ ] bug: rice + chiken =/=> rubbish, => riceball
 - [x] Food Storge
   - [x] show food with count in storage
@@ -31,3 +32,4 @@
 - [x] next level load
 - [x] add Rubbish button
 - [x] complete level page
+- [x] feat: match holding

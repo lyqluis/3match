@@ -89,8 +89,6 @@ export const changeImageSize = (
 		? options.max / Math.max(width, height)
 		: 1
 
-	console.log("change image size", node, width, height)
-
 	uiTransform.setContentSize(width * k, height * k)
 	// uiTransform.width = width * k
 	// uiTransform.height = height * k

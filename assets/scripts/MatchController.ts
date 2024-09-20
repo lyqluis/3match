@@ -14,6 +14,7 @@ import { State } from "./state"
 import { Block } from "./Block"
 import { FoodStorage } from "./FoodStorage"
 import { CookingTool } from "./CookingTool"
+import { Notify } from "./Notification"
 
 const { ccclass, property } = _decorator
 
@@ -39,20 +40,51 @@ export class MatchController extends Component {
 	startGame() {
 		// clear all blocks in childs
 		this.matchLayout.removeAllBlocks()
-		// this.matchHolding.removeAllBlocks()
+		this.matchHolding.clearAll()
 		this.matchBoard.clearAll()
 		this.matchLayout.renderGame(State.currentLevel ?? 1)
 	}
 
+	activateCookingTool(data) {
+		const tools = ["pan", "drinkmachine", "pot"]
+		const i = tools.findIndex((name) => data.name === name)
+		const tool = this.cookingTools[i]
+		tool.activate(data)
+	}
+
+	/**
+	 * remove button
+	 */
+	remove() {
+		// get empty slots in holding area
+		const emptySlots = this.matchHolding.getEmptySlots()
+		if (!emptySlots.length) return
+		// get first n blocks in match board
+		const blocks = this.matchBoard.getHoldingBlocks(emptySlots.length)
+		if (blocks) {
+			// remove blocks
+			blocks.forEach((block, i) => {
+				this.matchBoard.moveToHoldingArea(block.node, emptySlots[i])
+				this.matchHolding.addBlock(block)
+			})
+			this.matchBoard.moveToResetOrder()
+		} else {
+			Notify("no blocks to remove")
+		}
+	}
+
+	/**
+	 * animation
+	 */
 	// after block clicked, the block will be moved from layout area to march board area
 	// 1. copy the block, set origin block inactive
 	// 2. move the copy block to match board's position in controller area
 	// 3. set the copy block into match board area
 	// ? is it possible to move the origin block to holding area directly?
-	moveBlockToMatchBoardArea(block: Block, preBlock: Prefab) {
-		const clonedBlock = block.clone(this.node, preBlock)
+	moveBlockToMatchBoardArea(block: Block, preBlock?: Prefab) {
+		const clonedBlock = preBlock ? block.clone(this.node, preBlock) : block
 		// refresh shadow
-		this.matchLayout.refreshShadow()
+		preBlock && this.matchLayout.refreshShadow()
 
 		const slotPosition = this.matchBoard.getSlotPosition(clonedBlock)
 		const localPos = this.UITransform.convertToNodeSpaceAR(slotPosition)
@@ -77,12 +109,5 @@ export class MatchController extends Component {
 				}
 			})
 			.start()
-	}
-
-	activateCookingTool(data) {
-		const tools = ["pan", "drinkmachine", "pot"]
-		const i = tools.findIndex((name) => data.name === name)
-		const tool = this.cookingTools[i]
-		tool.activate(data)
 	}
 }

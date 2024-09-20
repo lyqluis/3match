@@ -2,7 +2,6 @@ import {
 	_decorator,
 	Component,
 	instantiate,
-	Label,
 	Layout,
 	math,
 	Node,

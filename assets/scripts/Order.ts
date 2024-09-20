@@ -80,8 +80,6 @@ export class Order extends Component {
 		// get current level's config's order list
 		const levelConfig = getLevelConfig(State.currentLevel ?? 1)
 		const cuisineList = levelConfig.orders
-		// --get random cuisine count
-		// --const cuisineCount = randomNum(1, 2)
 		// get random cuisines with count
 		const randomCuisines = []
 		for (let i = 0; i < cuisineCount; i++) {
@@ -136,7 +134,7 @@ export class Order extends Component {
 		this.setRandomAvatar()
 		// set id
 		id && this.setNum(id)
-		// TODO: set size
+		// set adaptive width
 		this.initOrderSize()
 		this.initProgressBar()
 	}
@@ -167,7 +165,7 @@ export class Order extends Component {
 		progressBar.progress = 0
 	}
 
-	// TODO
+	// adaptive width based on cuisine number
 	private initOrderSize() {
 		if (this.cuisineCount < 2) {
 			// remove extra cuisine node
