@@ -14,6 +14,7 @@ import { Notify } from "./Notification"
 import { Config, State } from "./state"
 import { setParentInPosition } from "./utils"
 import { Price } from "./Price"
+import { EventDispatcher } from "./EventDispatcher"
 const { ccclass, property } = _decorator
 
 @ccclass("OrdersController")
@@ -27,6 +28,19 @@ export class OrdersController extends Component {
 	orderId = 0
 	layout: Layout = null // ?
 	orders: Order[] = []
+
+	protected onLoad(): void {
+		EventDispatcher.getTarget().on(
+			EventDispatcher.PASS_LEVEL,
+			this.stopCreateOrders,
+			this
+		)
+		EventDispatcher.getTarget().on(
+			EventDispatcher.FAILED_LEVEL,
+			this.stopCreateOrders,
+			this
+		)
+	}
 
 	start() {
 		if (State.mode === 1) {
@@ -43,29 +57,34 @@ export class OrdersController extends Component {
 	createOrder() {
 		if (this.orders.length >= 2) return // max 2 orders
 
-		const lastOrder = this.orders[this.orders.length - 1]
-		const spacingX = 20
-		let newX = 0
-		let newY = 0
-		if (lastOrder) {
-			const lastRect = lastOrder.getBoundingBox()
-			// console.log("last order rect", lastRect)
-			newX = lastRect.x + lastRect.width + spacingX
-			newY = lastRect.y
-		}
-		// console.log("new xy", newX, newY)
-		this.orderId++
-		// instantiate order node
-		const orderNode = instantiate(this.preOrder)
-		orderNode.setParent(this.node)
-		this.node.addChild(orderNode)
+		try {
+			const lastOrder = this.orders[this.orders.length - 1]
+			const spacingX = 20
+			let newX = 0
+			let newY = 0
+			if (lastOrder) {
+				const lastRect = lastOrder.getBoundingBox()
+				// console.log("last order rect", lastRect)
+				newX = lastRect.x + lastRect.width + spacingX
+				newY = lastRect.y
+			}
+			// console.log("new xy", newX, newY)
+			this.orderId++
+			// instantiate order node
+			const orderNode = instantiate(this.preOrder)
+			orderNode.setParent(this.node)
+			this.node.addChild(orderNode)
 
-		const order = orderNode.getComponent(Order)
-		const cuisineCount = !lastOrder ? 1 : lastOrder.cuisineCount > 1 ? 1 : 2 // 2 cuisine or 1 cuisin
-		order.init(cuisineCount, this.orderId) // init random order by level config
-		this.orders.push(order)
-		// animate to show up
-		order.moveUpToShow(newX, newY)
+			const order = orderNode.getComponent(Order)
+			const cuisineCount = !lastOrder ? 1 : lastOrder.cuisineCount > 1 ? 1 : 2 // 2 cuisine or 1 cuisin
+			order.init(cuisineCount, this.orderId) // init random order by level config
+			this.orders.push(order)
+			// animate to show up
+			order.moveUpToShow(newX, newY)
+		} catch (e) {
+			this.unscheduleAllCallbacks()
+			this.clearOrders()
+		}
 	}
 
 	clearOrders() {
@@ -73,6 +92,11 @@ export class OrdersController extends Component {
 			order.node.destroy()
 		})
 		this.orders = []
+	}
+
+	stopCreateOrders() {
+		this.unscheduleAllCallbacks()
+		this.clearOrders()
 	}
 
 	reset() {

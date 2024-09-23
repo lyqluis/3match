@@ -80,6 +80,9 @@ export class Order extends Component {
 		// get current level's config's order list
 		const levelConfig = getLevelConfig(State.currentLevel ?? 1)
 		const cuisineList = levelConfig.orders
+		if (!cuisineList?.length) {
+			console.error("no cuisine config")
+		}
 		// get random cuisines with count
 		const randomCuisines = []
 		for (let i = 0; i < cuisineCount; i++) {
@@ -113,6 +116,7 @@ export class Order extends Component {
 	init(cuisineCount: number = 1, id?: number) {
 		// set cuisin data
 		this.data = this.generateOrderData(cuisineCount)
+		if (!this.data) return
 		this.cuisineCount = cuisineCount
 		// set cuisine image
 		this.data.cuisines.map(async (c, i) => {
