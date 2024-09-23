@@ -4,6 +4,7 @@ import {
 	EventTouch,
 	Input,
 	Node,
+	tween,
 	UITransform,
 	Vec2,
 	Vec3,
@@ -87,6 +88,8 @@ export class MatchHolding extends Component {
 		// move from blocks
 		this.blocks = this.blocks.filter((b) => b !== this.touchingBlock)
 		this.touchingBlock = null
+		// auto reset to new order
+		this.moveToResetOrder()
 	}
 
 	private onTouchCancel(e: EventTouch) {
@@ -95,5 +98,20 @@ export class MatchHolding extends Component {
 			this.touchingBlock.playScale()
 			this.touchingBlock = null
 		}
+	}
+
+	/**
+	 * animation
+	 */
+	moveToResetOrder() {
+		// 1. iterate the new block list
+		this.blocks.forEach((block, i) => {
+			// 2. set the block to the same index slot's position in the slot list
+			setParentInPosition(block.node, this.slots[i])
+			// 3. move old blocks to the new slot position
+			tween(block.node)
+				.to(0.1, { position: new Vec3(0, 0) })
+				.start()
+		})
 	}
 }

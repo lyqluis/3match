@@ -83,8 +83,6 @@ export class MatchBoard extends Component {
 			removedBlocks.map((block) => {
 				block.node.removeFromParent()
 				block.origin.node.removeFromParent()
-				// block.node.destroy()
-				// block.origin.node.destroy()
 			})
 			this.scheduleOnce(() => {
 				this.moveToResetOrder()
