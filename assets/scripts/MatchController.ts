@@ -15,6 +15,7 @@ import { Block } from "./Block"
 import { FoodStorage } from "./FoodStorage"
 import { CookingTool } from "./CookingTool"
 import { Notify } from "./Notification"
+import { EventDispatcher } from "./EventDispatcher"
 
 const { ccclass, property } = _decorator
 
@@ -35,6 +36,12 @@ export class MatchController extends Component {
 
 	protected onLoad() {
 		this.UITransform = this.node.getComponent(UITransform)
+		// listen remove from failed page
+		EventDispatcher.getTarget().on(
+			EventDispatcher.REMOVE_ACTION,
+			this.remove,
+			this
+		)
 	}
 
 	startGame() {
@@ -106,6 +113,11 @@ export class MatchController extends Component {
 						// add tool to the tools controller
 						this.activateCookingTool(deletedBlock.data)
 					}
+				}
+				// check if game is over
+				if (this.matchBoard.isFull()) {
+					console.log("match board is full")
+					EventDispatcher.getTarget().emit(EventDispatcher.FAILED_LEVEL)
 				}
 			})
 			.start()

@@ -8,6 +8,7 @@ import { OrdersController } from "./OrdersController"
 import { EventDispatcher } from "./EventDispatcher"
 import { Notify } from "./Notification"
 import { CompleteLevelPageAction } from "./CompleteLevelPageAction"
+import { FailedLevelPageAction } from "./FailedLevelPageAction"
 const { ccclass, property } = _decorator
 
 @ccclass("Main")
@@ -24,11 +25,18 @@ export class Main extends Component {
 	orderController: OrdersController = null
 	@property({ type: CompleteLevelPageAction })
 	completeLevelPage: CompleteLevelPageAction = null
+	@property({ type: FailedLevelPageAction })
+	failedLevelPage: FailedLevelPageAction = null
 
 	protected onLoad(): void {
 		EventDispatcher.getTarget().on(
 			EventDispatcher.PASS_LEVEL,
 			this.nextLevel,
+			this
+		)
+		EventDispatcher.getTarget().on(
+			EventDispatcher.FAILED_LEVEL,
+			this.failedLevel,
 			this
 		)
 	}
@@ -51,6 +59,8 @@ export class Main extends Component {
 	}
 
 	startGame() {
+		this.failedLevelPage.setActive(false)
+		this.completeLevelPage.setActive(false)
 		Notify(`第 ${State.currentLevel} 关`)
 		this.matchController.startGame()
 		this.foodStorage.reset()
@@ -67,11 +77,26 @@ export class Main extends Component {
 		)
 	}
 
+	failedLevel() {
+		this.failedLevelPage.setActive(true)
+	}
+
 	// use in complete level page
 	clickToNextLevel() {
 		this.completeLevelPage.clickBtn(() => {
 			this.nextLevel()
 		})
+	}
+
+	// use in failed level page
+	clickToRemove() {
+		// todo: check ad rest times
+		if (!this.matchController.matchHolding.isFull()) {
+			EventDispatcher.getTarget().emit(EventDispatcher.REMOVE_ACTION)
+			this.failedLevelPage.setActive(false)
+		} else {
+			this.failedLevelPage.setContinueBtnActive(false)
+		}
 	}
 
 	// test

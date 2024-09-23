@@ -2,7 +2,7 @@
 
 - [x] main sence's background
 - [ ] rollup all imgs to sprite img
-- [ ] add main sence's bgm
+- [ ] add bgm
 - [x] add Block
 - [x] add Editor
   - [x] add block
@@ -10,7 +10,7 @@
   - [x] delete block
   - [x] clear all blocks
   - [x] import & export data
-  - [ ] level config
+- [-] level config
 - [x] Item / Food
   - [x] optimization: delete default img when init
 - [x] Order
@@ -22,7 +22,7 @@
   - [x] select cooking tool
   - [x] finish cooking
   - [x] bug: can be selected when inactive
-  - [] bug: can be clicked to cook without materials
+  - [x] bug: can be clicked to cook without materials
   - [ ] bug: rice + chiken =/=> rubbish, => riceball
 - [x] Food Storge
   - [x] show food with count in storage
@@ -33,3 +33,6 @@
 - [x] add Rubbish button
 - [x] complete level page
 - [x] feat: match holding
+- [x] feat: failed page & revive
+- [ ] set ad state
+- [ ] deploy

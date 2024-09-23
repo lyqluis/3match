@@ -42,6 +42,10 @@ export class MatchHolding extends Component {
 		this.blocks = []
 	}
 
+	isFull() {
+		return this.blocks.length >= this.slots.length
+	}
+
 	private getTouchBlock(
 		position: Vec3 // world position
 	): Block {

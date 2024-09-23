@@ -103,6 +103,10 @@ export class MatchBoard extends Component {
 		return blockList.slice(0, n)
 	}
 
+	isFull(){
+		return this.blockList.length >= this.slotList.length
+	}
+
 	/**
 	 * animation
 	 */
