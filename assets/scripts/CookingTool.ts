@@ -3,7 +3,6 @@ import {
 	Color,
 	Component,
 	Input,
-	instantiate,
 	Node,
 	ProgressBar,
 	Sprite,
@@ -17,7 +16,7 @@ import { Item } from "./Item"
 import { Notify } from "./Notification"
 import { loadImage, setParentInPosition } from "./utils"
 import { findCuisineById } from "./stateMap"
-const { ccclass, property } = _decorator
+const { ccclass } = _decorator
 
 @ccclass("CookingTool")
 export class CookingTool extends Component {
@@ -50,8 +49,6 @@ export class CookingTool extends Component {
 		)
 		this.setActive(false)
 	}
-
-	start() {}
 
 	update(deltaTime: number) {
 		if (this.isWorking) {
@@ -114,6 +111,12 @@ export class CookingTool extends Component {
 			console.error("choose a cooking tool first")
 			return
 		}
+		
+		if (!this.materials.length) {
+			Notify("请先放入食材")
+			return
+		}
+
 		if (this.isWorking) return
 
 		// set cooking time
