@@ -8,12 +8,18 @@ const generateMap = () => {
 	const map = {}
 
 	// 定义子目录名称
-	const subDirs = ["food", "tool", "cuisine"]
+	const subDirs = [
+		"food",
+		"tool",
+		//  "cuisine"	// ? no need in BlockMap
+	]
+
+	const p = "../assets/resouces/"
 
 	// 遍历每个子目录
 	subDirs.forEach((subDir) => {
 		// 获取子目录的路径
-		const dirPath = path.join(__dirname, "assets/src/imgs", subDir)
+		const dirPath = path.resolve(__dirname, p, "imgs", subDir)
 
 		// 读取目录中的所有文件
 		const files = fs.readdirSync(dirPath)
@@ -42,7 +48,7 @@ const generateMap = () => {
 	const mapString = `export const BlockMap = ${JSON.stringify(map, null, 2)};`
 
 	// 定义新文件的路径
-	const outputFilePath = path.join(__dirname, "BlockMap.ts")
+	const outputFilePath = path.resolve(__dirname, p, "scripts", "BlockMap.ts")
 
 	try {
 		// 将 map 字符串写入文件
