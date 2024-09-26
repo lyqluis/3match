@@ -30,11 +30,6 @@ export class Main extends Component {
 
 	protected onLoad(): void {
 		EventDispatcher.getTarget().on(
-			EventDispatcher.PASS_LEVEL,
-			this.nextLevel,
-			this
-		)
-		EventDispatcher.getTarget().on(
 			EventDispatcher.FAILED_LEVEL,
 			this.failedLevel,
 			this
@@ -92,6 +87,7 @@ export class Main extends Component {
 	clickToRemove() {
 		// todo: check ad rest times
 		if (!this.matchController.matchHolding.isFull()) {
+			this.failedLevelPage.setContinueBtnActive(true)
 			EventDispatcher.getTarget().emit(EventDispatcher.REMOVE_ACTION)
 			this.failedLevelPage.setActive(false)
 		} else {

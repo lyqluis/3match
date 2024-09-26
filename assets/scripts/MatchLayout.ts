@@ -13,10 +13,9 @@ import {
 	Vec3,
 } from "cc"
 import { Block } from "./Block"
-import { getLevelConfig, State } from "./state"
+import { getLevelConfig } from "./state"
 import { BlockMap } from "./BlockMap"
 import { MatchController } from "./MatchController"
-import { loadDirImages } from "./utils"
 const { ccclass, property } = _decorator
 
 @ccclass("MatchLayout")

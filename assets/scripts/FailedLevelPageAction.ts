@@ -7,7 +7,7 @@ export class FailedLevelPageAction extends Component {
 	continueBtn: Node = null
 
 	start() {
-		this.setBtnActive(this.continueBtn, true)
+		this.setContinueBtnActive(true)
 	}
 
 	setActive(active?: boolean) {

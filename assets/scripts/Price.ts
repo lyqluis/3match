@@ -1,7 +1,6 @@
 import { _decorator, Component, Label, Node } from "cc"
 import { getLevelConfig, State } from "./state"
 import { EventDispatcher } from "./EventDispatcher"
-import { Notify } from "./Notification"
 const { ccclass, property } = _decorator
 
 @ccclass("Price")
@@ -15,8 +14,6 @@ export class Price extends Component {
 	start() {
 		this.init()
 	}
-
-	update(deltaTime: number) {}
 
 	init() {
 		this.money = 0
@@ -35,6 +32,7 @@ export class Price extends Component {
 			this.scheduleOnce(() => {
 				// open complete level page
 				this.completeLevelPage.active = true
+				EventDispatcher.getTarget().emit(EventDispatcher.PASS_LEVEL)
 			}, 1)
 		}
 	}

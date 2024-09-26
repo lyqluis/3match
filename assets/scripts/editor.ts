@@ -89,8 +89,10 @@ export class Editor extends Component {
 		this.successMsg("Import successfully!")
 		// clear current blocks
 		this.matchLayout.removeAllBlocks()
+		// pre process data to add quotes to keys
+		const formatedDataString = this.formateJSONString(dataString)
+		const data = JSON.parse(formatedDataString)
 		// add blocks by data
-		const data = JSON.parse(dataString)
 		data.map((pos) => {
 			this.matchLayout.addBlockByLocalPosition(new Vec3(pos.x, pos.y))
 		})
@@ -130,5 +132,11 @@ export class Editor extends Component {
 			EventDispatcher.SHOW_NOTIFICATION,
 			"All blocks cleared"
 		)
+	}
+
+	private formateJSONString(string: string): string {
+		string = string.replace(/(\w+):/g, '"$1":') // add quotes to keys
+		string = string.replace(/,(?=\n*\t*\])/g, "") // remove last comma
+		return string
 	}
 }

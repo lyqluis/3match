@@ -2,7 +2,6 @@ import {
 	_decorator,
 	Component,
 	instantiate,
-	Layout,
 	math,
 	Node,
 	Prefab,
@@ -26,7 +25,6 @@ export class OrdersController extends Component {
 
 	orderCount = 2
 	orderId = 0
-	layout: Layout = null // ?
 	orders: Order[] = []
 
 	protected onLoad(): void {
@@ -38,6 +36,12 @@ export class OrdersController extends Component {
 		EventDispatcher.getTarget().on(
 			EventDispatcher.FAILED_LEVEL,
 			this.stopCreateOrders,
+			this
+		)
+		// click continue button from failed page (emit from main)
+		EventDispatcher.getTarget().on(
+			EventDispatcher.REMOVE_ACTION,
+			this.startOrder,
 			this
 		)
 	}
@@ -82,8 +86,7 @@ export class OrdersController extends Component {
 			// animate to show up
 			order.moveUpToShow(newX, newY)
 		} catch (e) {
-			this.unscheduleAllCallbacks()
-			this.clearOrders()
+			this.reset()
 		}
 	}
 
