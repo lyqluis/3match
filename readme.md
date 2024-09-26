@@ -15,6 +15,7 @@
   - [x] optimization: delete default img when init
 - [x] Order
   - [x] adaptive width based on cuisine number of order
+  - [x] bug: cuisine img is fixed to width
 - [x] when Cooking tool selected, select Order to match cuisine
 - [x] Cooking Tool
   - [x] add cooking tool
@@ -23,6 +24,7 @@
   - [x] finish cooking
   - [x] bug: can be selected when inactive
   - [x] bug: can be clicked to cook without materials
+  - [x] bug: drinkmachine img disappear when cooking
   - [ ] bug: rice + chiken =/=> rubbish, => riceball
 - [x] Food Storge
   - [x] show food with count in storage
